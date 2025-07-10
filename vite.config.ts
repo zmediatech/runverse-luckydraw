@@ -10,7 +10,7 @@ export default defineConfig({
         target: 'https://runverse-backend.vercel.app',
         changeOrigin: true,
         secure: false,
-        timeout: 30000,
+        timeout: 5000,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('Proxy error:', err);
