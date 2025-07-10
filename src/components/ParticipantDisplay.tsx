@@ -38,7 +38,7 @@ export const ParticipantDisplay: React.FC<ParticipantDisplayProps> = ({
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center text-white font-bold text-xl">
-                {currentParticipant.name.charAt(0)}
+                {currentParticipant.name?.charAt(0) || '?'}
               </div>
             )}
           </div>
