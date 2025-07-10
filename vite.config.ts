@@ -10,7 +10,7 @@ export default defineConfig({
         target: 'https://runverse-backend.vercel.app',
         changeOrigin: true,
         secure: true,
-        timeout: 10000, // Reduced timeout to fail faster
+        timeout: 60000, // Increased timeout to 60 seconds to prevent socket hang up
         configure: (proxy, _options) => {
           proxy.on('error', (err, req, res) => {
             console.log('Proxy error:', err.message);
