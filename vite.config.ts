@@ -9,7 +9,7 @@ export default defineConfig({
       '/api': {
         target: 'https://runverse-backend.vercel.app',
         changeOrigin: true,
-        secure: true,
+        secure: false,
       }
     }
   },
