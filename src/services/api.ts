@@ -34,7 +34,8 @@ export const fetchLuckyDrawData = async (eventId: string): Promise<LuckyDrawResp
     const response = await fetch(`${API_BASE_URL}/luckydraws/get/${eventId}`);
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.warn(`API request failed with status: ${response.status}. Using mock data.`);
+      return mockLuckyDrawData;
     }
     
     const data = await response.json();
@@ -42,7 +43,6 @@ export const fetchLuckyDrawData = async (eventId: string): Promise<LuckyDrawResp
   } catch (error) {
     console.error('Error fetching lucky draw data:', error);
     console.warn('Falling back to mock data due to API connectivity issues');
-    // Return mock data as fallback
     return mockLuckyDrawData;
   }
 };
