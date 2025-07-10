@@ -28,14 +28,14 @@ export const fetchParticipantDetails = async (participantIds: string[]) => {
           const userData = await response.json();
           return {
             id,
-            name: userData.displayName || userData.name || `Player_${id.slice(-4)}`,
+            name: userData.displayName || userData.name || `Player_${String(id).slice(-4)}`,
             picture: userData.photoURL || userData.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
           };
         } else {
           // Fallback if user API fails
           return {
             id,
-            name: `Player_${id.slice(-4)}`,
+            name: `Player_${String(id).slice(-4)}`,
             picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
           };
         }
@@ -44,7 +44,7 @@ export const fetchParticipantDetails = async (participantIds: string[]) => {
         // Fallback for individual participant
         return {
           id,
-          name: `Player_${id.slice(-4)}`,
+          name: `Player_${String(id).slice(-4)}`,
           picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
         };
       }
@@ -57,7 +57,7 @@ export const fetchParticipantDetails = async (participantIds: string[]) => {
     // Complete fallback
     return participantIds.map((id) => ({
       id,
-      name: `Player_${id.slice(-4)}`,
+      name: `Player_${String(id).slice(-4)}`,
       picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
     }));
   }
