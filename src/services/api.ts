@@ -7,32 +7,24 @@ const mockLuckyDrawData: LuckyDrawResponse = {
   id: 'mock-event-123',
   title: 'Demo Lucky Draw Event',
   description: 'This is a demo event with mock data',
-  prizes: [
+  rewards: [
     {
-      id: 'prize-1',
-      name: 'Grand Prize - Gaming Setup',
-      description: 'Complete gaming setup with monitor, keyboard, and mouse',
-      value: '$2,500',
-      quantity: 1,
-      image: 'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=400'
+      title: 'Grand Prize - Gaming Setup',
+      picture: 'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=400',
+      position: 1
     },
     {
-      id: 'prize-2',
-      name: 'Second Prize - Wireless Headphones',
-      description: 'Premium noise-cancelling wireless headphones',
-      value: '$300',
-      quantity: 2,
-      image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=400'
+      title: 'Second Prize - Wireless Headphones',
+      picture: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=400',
+      position: 2
     },
     {
-      id: 'prize-3',
-      name: 'Third Prize - Gift Card',
-      description: 'Amazon gift card',
-      value: '$100',
-      quantity: 5,
-      image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=400'
+      title: 'Third Prize - Gift Card',
+      picture: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=400',
+      position: 3
     }
   ],
+  numWinners: 8,
   participants: [
     'user-001', 'user-002', 'user-003', 'user-004', 'user-005',
     'user-006', 'user-007', 'user-008', 'user-009', 'user-010',
