@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import https from 'https';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +12,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
         timeout: 30000,
+        agent: new https.Agent({ keepAlive: false }),
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('Proxy error:', err);
