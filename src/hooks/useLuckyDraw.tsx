@@ -13,6 +13,7 @@ export const useLuckyDraw = () => {
   const [remainingParticipants, setRemainingParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [usingFallbackData, setUsingFallbackData] = useState(false);
 
   const getIconForReward = (title: string) => {
     const lowerTitle = title.toLowerCase();
@@ -49,22 +50,34 @@ export const useLuckyDraw = () => {
       try {
         setLoading(true);
         setError(null);
+        setUsingFallbackData(false);
 
         console.log('Fetching lucky draw data...');
         
-        // Fetch lucky draw data
+        // Fetch lucky draw data (will use fallback if API fails)
         const drawData = await fetchLuckyDrawData(EVENT_ID);
         console.log('Draw data received:', drawData);
         
         if (!drawData) {
-          throw new Error('No data received from API');
+          throw new Error('No data received');
+        }
+
+        // Check if we're using mock data (indicated by mock- prefix in id)
+        if (drawData.id.startsWith('mock-')) {
+          setUsingFallbackData(true);
+          console.log('Using fallback mock data due to API unavailability');
         }
 
         setLuckyDrawData(drawData);
 
         // Ensure we have participants array
         if (!drawData.participants || !Array.isArray(drawData.participants)) {
-          throw new Error('Invalid participants data received');
+          console.warn('Invalid participants data, using empty array');
+          setParticipants([]);
+          setPrizes([]);
+          setWinners([]);
+          setRemainingParticipants([]);
+          return;
         }
 
         // Use participant data directly from API
@@ -80,6 +93,9 @@ export const useLuckyDraw = () => {
         if (!drawData.rewards || !Array.isArray(drawData.rewards)) {
           console.warn('No rewards data, using default prizes');
           setPrizes([]);
+          setParticipants(participantDetails);
+          setWinners([]);
+          setRemainingParticipants(participantDetails);
         } else {
           // Convert rewards to prizes format
           const convertedPrizes: Prize[] = drawData.rewards.map((reward, index) => ({
@@ -125,7 +141,11 @@ export const useLuckyDraw = () => {
       } catch (err) {
         console.error('Error loading lucky draw data:', err);
         const errorMessage = err instanceof Error ? err.message : 'Failed to load lucky draw data';
-        setError(errorMessage);
+        
+        // Only set error if we don't have fallback data
+        if (!usingFallbackData) {
+          setError(`Unable to connect to server. ${errorMessage}`);
+        }
         
         // Set fallback data to prevent app crashes
         setParticipants([]);
@@ -148,6 +168,7 @@ export const useLuckyDraw = () => {
     prizes,
     loading,
     error,
+    usingFallbackData,
     participantCount: participants.length,
     totalEntries: luckyDrawData?.maxTotalEntries || participants.length,
     numWinners: luckyDrawData?.numWinners || prizes.length

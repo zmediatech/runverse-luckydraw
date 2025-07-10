@@ -10,28 +10,52 @@ export default defineConfig({
         target: 'https://runverse-backend.vercel.app',
         changeOrigin: true,
         secure: true,
-        timeout: 30000,
+        timeout: 10000, // Reduced timeout to fail faster
         configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, res) => {
-            console.log('Proxy error:', err);
+          proxy.on('error', (err, req, res) => {
+            console.log('Proxy error:', err.message);
             if (res && !res.headersSent) {
               res.writeHead(500, {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
               });
               res.end(JSON.stringify({ 
-                error: 'Proxy connection failed',
-                message: 'Unable to connect to the backend server'
+                error: 'Backend server unavailable',
+                message: 'The backend service is currently unreachable. Please try again later.',
+                code: 'PROXY_CONNECTION_FAILED'
               }));
             }
           });
+          
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
-            // Set proper headers
-            proxyReq.setHeader('User-Agent', 'Lucky Draw App');
+            console.log('Sending Request to Target:', req.method, req.url);
+            // Set proper headers for better compatibility
+            proxyReq.setHeader('User-Agent', 'Lucky Draw App/1.0');
             proxyReq.setHeader('Accept', 'application/json');
+            proxyReq.setHeader('Connection', 'keep-alive');
           });
+          
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+            console.log('Received Response from Target:', proxyRes.statusCode, req.url);
+            if (proxyRes.statusCode && proxyRes.statusCode >= 400) {
+              console.warn(`Backend returned error status: ${proxyRes.statusCode}`);
+            }
+          });
+          
+          proxy.on('proxyReqError', (err, req, res) => {
+            console.error('Proxy request error:', err.message);
+            if (res && !res.headersSent) {
+              res.writeHead(500, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              });
+              res.end(JSON.stringify({
+                error: 'Connection failed',
+                message: 'Unable to reach the backend server'
+              }));
+            }
           });
         },
       }
