@@ -13,10 +13,40 @@ export const PrizeDisplay: React.FC<PrizeDisplayProps> = ({
   isSpinning
 }) => {
   if (prizes.length === 0) {
-    return null;
+    return (
+      <div className="prize-wheel-container p-8 rounded-xl border-2 border-pink-400 bg-black/40 backdrop-blur-sm max-w-lg mx-auto text-center">
+        <div className="text-sm text-pink-300 mb-4 opacity-75">CURRENT PRIZE</div>
+        <div className="prize-display prize-common p-6 rounded-lg mb-4">
+          <div className="mb-4 flex justify-center">
+            <div className="text-gray-300 mb-3 flex justify-center">
+              <Gift className="w-16 h-16" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-white neon-glow-text">
+            MYSTERY PRIZE
+          </div>
+          <div className="text-lg text-pink-300 mt-2">
+            Coming Soon
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const currentPrize = prizes[currentIndex];
+  
+  if (!currentPrize) {
+    return (
+      <div className="prize-wheel-container p-8 rounded-xl border-2 border-pink-400 bg-black/40 backdrop-blur-sm max-w-lg mx-auto text-center">
+        <div className="text-sm text-pink-300 mb-4 opacity-75">CURRENT PRIZE</div>
+        <div className="prize-display prize-common p-6 rounded-lg mb-4">
+          <div className="text-2xl font-bold text-white neon-glow-text">
+            Loading Prize...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getPrizeRarityGlow = (rarity: string) => {
     switch (rarity) {

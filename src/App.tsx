@@ -29,7 +29,17 @@ function App() {
   // Show loading state while API data is being fetched
   if (apiLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center relative overflow-hidden">
+        {/* Animated background grid */}
+        <div className="absolute inset-0 bg-grid opacity-20"></div>
+        
+        {/* Floating particles */}
+        <div className="particles">
+          {[...Array(10)].map((_, i) => (
+            <div key={i} className={`particle particle-${i}`}></div>
+          ))}
+        </div>
+        
         <div className="text-center space-y-4">
           <div className="loading-spinner mx-auto"></div>
           <h2 className="text-2xl font-bold text-cyan-400 neon-glow-text">
@@ -44,7 +54,10 @@ function App() {
   // Show error state if API call failed
   if (apiError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center relative overflow-hidden">
+        {/* Animated background grid */}
+        <div className="absolute inset-0 bg-grid opacity-20"></div>
+        
         <div className="text-center space-y-4 max-w-md mx-auto p-6">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
           <h2 className="text-2xl font-bold text-red-400">Error Loading Data</h2>
@@ -62,9 +75,13 @@ function App() {
   }
 
   const startGame = () => {
-    if (participants.length === 0 || prizes.length === 0) {
-      alert('No participants or prizes available!');
+    if (participants.length === 0) {
+      alert('No participants available! Please check your connection and try again.');
       return;
+    }
+    
+    if (prizes.length === 0) {
+      alert('No prizes available! The game will continue with default prizes.');
     }
 
     setGameState('ticker');
@@ -192,7 +209,7 @@ function App() {
             </div>
             <button
               onClick={startGame}
-              disabled={participants.length === 0 || prizes.length === 0}
+              disabled={participants.length === 0}
               className="start-button px-12 py-4 text-xl font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg border-2 border-cyan-400 hover:border-pink-400 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               SPIN NOW

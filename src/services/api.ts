@@ -1,72 +1,64 @@
-import { LuckyDrawResponse, LuckyDrawParticipant } from '../types';
+import { LuckyDrawResponse } from '../types';
 
 const API_BASE_URL = '/api';
 
 export const fetchLuckyDrawData = async (eventId: string): Promise<LuckyDrawResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/luckydraws/get/${eventId}`);
+    console.log(`Fetching lucky draw data for event: ${eventId}`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    
+    const response = await fetch(`${API_BASE_URL}/luckydraws/get/${eventId}`, {
+      signal: controller.signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`API request failed with status: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
-    console.log('Lucky draw data received:', data);
-    return data;
+    console.log('Lucky draw data received successfully:', data);
+    
+    // Validate the response structure
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid response format received from API');
+    }
+    
+    // Ensure required fields exist with defaults
+    const validatedData: LuckyDrawResponse = {
+      id: data.id || '',
+      eventId: data.eventId || eventId,
+      drawDate: data.drawDate || { _seconds: Date.now() / 1000, _nanoseconds: 0 },
+      maxEntries: data.maxEntries || 0,
+      maxTotalEntries: data.maxTotalEntries || 0,
+      entryPriceCurrency: data.entryPriceCurrency || '',
+      entryPriceTokens: data.entryPriceTokens || 0,
+      numWinners: data.numWinners || 0,
+      active: data.active !== undefined ? data.active : true,
+      createdAt: data.createdAt || { _seconds: Date.now() / 1000, _nanoseconds: 0 },
+      updatedAt: data.updatedAt || { _seconds: Date.now() / 1000, _nanoseconds: 0 },
+      rewards: Array.isArray(data.rewards) ? data.rewards : [],
+      participants: Array.isArray(data.participants) ? data.participants : []
+    };
+    
+    return validatedData;
   } catch (error) {
-    console.error('Error fetching lucky draw data:', error);
-    throw error;
-  }
-};
-
-export const fetchParticipantDetails = async (participants: LuckyDrawParticipant[]) => {
-  try {
-    // Transform API participant data to our format
-    return participants.map(participant => ({
-      id: participant.userId,
-      name: participant.name,
-      picture: participant.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.userId}&backgroundColor=b6e3f4,c0aede,d1d4f9`
-    }));
-  } catch (error) {
-    console.error('Error processing participant details:', error);
-    throw error;
-  }
-};
-
-// Legacy function for backward compatibility (if needed)
-export const fetchParticipantDetailsByIds = async (participantIds: string[]) => {
-  try {
-    // Fetch details for each participant by ID
-    const participantPromises = participantIds.map(async (id) => {
-      const response = await fetch(`${API_BASE_URL}/users/${id}`);
-      if (response.ok) {
-        const userData = await response.json();
-        return {
-          id,
-          name: userData.displayName || userData.name || `Player_${id.slice(-4)}`,
-          picture: userData.photoURL || userData.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
-        };
-      } else {
-        // Fallback if user API fails
-        return {
-          id,
-          name: `Player_${id.slice(-4)}`,
-          picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
-        };
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout - please check your connection and try again');
       }
-    });
-
-    const participants = await Promise.all(participantPromises);
-    return participants;
-  } catch (error) {
-    console.error('Error fetching participant details by IDs:', error);
-    // Fallback for individual participants
-    return participantIds.map((id) => {
-      return {
-        id,
-        name: `Player_${id.slice(-4)}`,
-        picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}&backgroundColor=b6e3f4,c0aede,d1d4f9`
-      };
-    });
+      console.error('Error fetching lucky draw data:', error.message);
+      throw new Error(`Failed to fetch lucky draw data: ${error.message}`);
+    }
+    
+    console.error('Unknown error fetching lucky draw data:', error);
+    throw new Error('An unexpected error occurred while fetching data');
   }
-}
+};

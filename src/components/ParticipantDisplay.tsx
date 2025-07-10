@@ -15,14 +15,23 @@ export const ParticipantDisplay: React.FC<ParticipantDisplayProps> = ({
 }) => {
   if (participants.length === 0) {
     return (
-      <div className="text-center p-8">
+      <div className="participant-wheel-container p-8 rounded-xl border-2 border-cyan-400 bg-black/40 backdrop-blur-sm max-w-lg mx-auto text-center">
         <Users className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
-        <p className="text-cyan-300">No participants found</p>
+        <p className="text-cyan-300">Loading participants...</p>
       </div>
     );
   }
 
   const currentParticipant = participants[currentIndex];
+  
+  if (!currentParticipant) {
+    return (
+      <div className="participant-wheel-container p-8 rounded-xl border-2 border-cyan-400 bg-black/40 backdrop-blur-sm max-w-lg mx-auto text-center">
+        <Users className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
+        <p className="text-cyan-300">No participant selected</p>
+      </div>
+    );
+  }
 
   return (
     <div className="participant-wheel-container p-8 rounded-xl border-2 border-cyan-400 bg-black/40 backdrop-blur-sm max-w-lg mx-auto">
