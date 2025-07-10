@@ -3,22 +3,7 @@ import { Trophy, Zap, Star, Crown, Gift, Gem, Coins, Award, Users, AlertCircle, 
 import { useLuckyDraw } from './hooks/useLuckyDraw';
 import { ParticipantDisplay } from './components/ParticipantDisplay';
 import { PrizeDisplay } from './components/PrizeDisplay';
-import { GameState, Player, Participant, Prize } from './types';
-
-const mockPlayers: Player[] = [
-  { id: 1, name: "NEXUS_PRIME", score: 98750, rank: 1 },
-  { id: 2, name: "CYBER_STORM", score: 94320, rank: 2 },
-  { id: 3, name: "NEON_BLADE", score: 91580, rank: 3 },
-  { id: 4, name: "QUANTUM_FLUX", score: 89420, rank: 4 },
-  { id: 5, name: "DIGITAL_GHOST", score: 87340, rank: 5 },
-  { id: 6, name: "VOID_RUNNER", score: 85200, rank: 6 },
-  { id: 7, name: "PIXEL_WARRIOR", score: 83150, rank: 7 },
-  { id: 8, name: "MATRIX_HACKER", score: 81900, rank: 8 },
-  { id: 9, name: "CHROME_VIPER", score: 80750, rank: 9 },
-  { id: 10, name: "NEON_KNIGHT", score: 79600, rank: 10 },
-  { id: 11, name: "CYBER_PHOENIX", score: 78450, rank: 11 },
-  { id: 12, name: "VOLT_STRIKER", score: 77300, rank: 12 },
-];
+import { GameState, Participant, Prize } from './types';
 
 function App() {
   const { 
