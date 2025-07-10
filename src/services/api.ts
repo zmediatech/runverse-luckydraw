@@ -4,9 +4,7 @@ const API_BASE_URL = '/api';
 
 export const fetchLuckyDrawData = async (eventId: string): Promise<LuckyDrawResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/luckydraws/get/${eventId}`, {
-      timeout: 10000 // 10 second timeout
-    } as RequestInit);
+    const response = await fetch(`${API_BASE_URL}/luckydraws/get/${eventId}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
