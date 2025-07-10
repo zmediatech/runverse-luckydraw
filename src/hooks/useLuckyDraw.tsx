@@ -9,6 +9,8 @@ export const useLuckyDraw = () => {
   const [luckyDrawData, setLuckyDrawData] = useState<LuckyDrawResponse | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [prizes, setPrizes] = useState<Prize[]>([]);
+  const [winners, setWinners] = useState<Participant[]>([]);
+  const [remainingParticipants, setRemainingParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +55,6 @@ export const useLuckyDraw = () => {
 
         // Fetch participant details
         const participantDetails = await fetchParticipantDetails(drawData.participants);
-        setParticipants(participantDetails);
 
         // Convert rewards to prizes format
         const convertedPrizes: Prize[] = drawData.rewards.map((reward, index) => ({
@@ -67,6 +68,27 @@ export const useLuckyDraw = () => {
         }));
 
         setPrizes(convertedPrizes);
+
+        // Assign prizes to random participants for demonstration
+        // In a real scenario, this would come from the API
+        const shuffledParticipants = [...participantDetails].sort(() => Math.random() - 0.5);
+        
+        // Create winners array with assigned prizes
+        const winnersWithPrizes = convertedPrizes.map((prize, index) => ({
+          ...shuffledParticipants[index],
+          position: parseInt(prize.value.split(' ')[1]), // Extract position number
+          prize: prize
+        })).sort((a, b) => (a.position || 0) - (b.position || 0));
+
+        // Remaining participants without prizes
+        const remainingParticipantsData = shuffledParticipants.slice(convertedPrizes.length).map((participant, index) => ({
+          ...participant,
+          position: convertedPrizes.length + index + 1
+        }));
+
+        setWinners(winnersWithPrizes);
+        setRemainingParticipants(remainingParticipantsData);
+        setParticipants([...winnersWithPrizes, ...remainingParticipantsData]);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load lucky draw data');
       } finally {
@@ -80,6 +102,8 @@ export const useLuckyDraw = () => {
   return {
     luckyDrawData,
     participants,
+    winners,
+    remainingParticipants,
     prizes,
     loading,
     error,

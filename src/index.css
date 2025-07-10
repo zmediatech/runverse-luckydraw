@@ -382,6 +382,20 @@ body {
   color: #a855f7;
 }
 
+/* Podium cards */
+.podium-card {
+  min-width: 140px;
+  background: linear-gradient(45deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 50, 0.8));
+  border: 2px solid;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.podium-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px currentColor;
+}
+
 /* Top player cards */
 .top-player-card {
   padding: 1.5rem;

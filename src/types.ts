@@ -50,6 +50,8 @@ export interface Participant {
   id: string;
   name: string;
   picture?: string;
+  position?: number;
+  prize?: Prize;
 }
 
 export type GameState = 'start' | 'ticker' | 'loading' | 'leaderboard' | 'error';
