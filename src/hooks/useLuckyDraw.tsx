@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { LuckyDrawResponse, Participant, Prize } from '../types';
-import { fetchLuckyDrawData, fetchParticipantDetails } from '../services/api';
+import { fetchLuckyDrawData } from '../services/api';
 import { Trophy, Crown, Star, Gift, Gem, Award, Watch, Shirt } from 'lucide-react';
 
 const EVENT_ID = 'KIiz5bZEVIEDROIskpKv';
@@ -53,8 +53,12 @@ export const useLuckyDraw = () => {
         const drawData = await fetchLuckyDrawData(EVENT_ID);
         setLuckyDrawData(drawData);
 
-        // Fetch participant details
-        const participantDetails = await fetchParticipantDetails(drawData.participants);
+        // Convert participants from API format
+        const participantDetails = drawData.participants.map((participant) => ({
+          id: participant.userId,
+          name: participant.name,
+          picture: participant.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.userId}&backgroundColor=b6e3f4,c0aede,d1d4f9`
+        }));
 
         // Convert rewards to prizes format
         const convertedPrizes: Prize[] = drawData.rewards.map((reward, index) => ({

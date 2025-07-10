@@ -297,17 +297,27 @@ function App() {
                 LUCKY DRAW RESULTS
               </h1>
               <p className="text-lg text-cyan-300">Tournament Champions & All Participants</p>
+              <div className="flex justify-center gap-8 text-sm text-purple-300 mt-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span>{participantCount} Total Participants</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-5 h-5" />
+                  <span>{winners.length} Prize Winners</span>
+                </div>
+              </div>
             </div>
 
             {/* Top 3 Winners Podium */}
             {winners.length > 0 && (
-              <div className="space-y-6">
+              <div className="section-spacing">
                 <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text">
                   🏆 PRIZE WINNERS 🏆
                 </h2>
                 
                 {/* Top 3 Podium */}
-                <div className="flex justify-center items-end gap-4 mb-8">
+                <div className="flex justify-center items-end gap-6 mb-12">
                   {winners.slice(0, 3).map((winner, index) => {
                     const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd for visual arrangement
                     const actualIndex = podiumOrder[index];
@@ -315,16 +325,15 @@ function App() {
                     if (!actualWinner) return null;
                     
                     const heights = ['h-32', 'h-40', 'h-28'];
-                    const positions = ['2nd', '1st', '3rd'];
                     
                     return (
                       <div
                         key={actualWinner.id}
-                        className={`podium-card ${getRankGlow(actualWinner.position || 1)} p-6 rounded-xl ${heights[index]} flex flex-col justify-between items-center animate-slide-in backdrop-blur-sm`}
+                        className={`podium-card ${getRankGlow(actualWinner.position || 1)} p-6 rounded-xl ${heights[index]} flex flex-col justify-between items-center animate-slide-in backdrop-blur-sm min-w-[160px]`}
                         style={{ animationDelay: `${index * 0.2}s` }}
                       >
                         <div className="text-center">
-                          <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-current mb-3 mx-auto">
+                          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current mb-4 mx-auto">
                             {actualWinner.picture ? (
                               <img 
                                 src={actualWinner.picture} 
@@ -337,14 +346,14 @@ function App() {
                               </div>
                             )}
                           </div>
-                          <div className="font-bold text-white text-sm mb-1">{actualWinner.name}</div>
-                          <div className="text-xs opacity-75">Position {actualWinner.position}</div>
+                          <div className="font-bold text-white text-base mb-2 truncate max-w-[140px]">{actualWinner.name}</div>
+                          <div className="text-sm opacity-75 mb-3">Position {actualWinner.position}</div>
                         </div>
                         
                         {actualWinner.prize && (
                           <div className="text-center mt-2">
                             {actualWinner.prize.picture ? (
-                              <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-current mx-auto mb-2">
+                              <div className="w-14 h-14 rounded-lg overflow-hidden border-2 border-current mx-auto mb-3">
                                 <img 
                                   src={actualWinner.prize.picture} 
                                   alt={actualWinner.prize.name}
@@ -352,15 +361,15 @@ function App() {
                                 />
                               </div>
                             ) : (
-                              <div className={`${actualWinner.prize.color} mb-2 flex justify-center`}>
+                              <div className={`${actualWinner.prize.color} mb-3 flex justify-center`}>
                                 {actualWinner.prize.icon}
                               </div>
                             )}
-                            <div className="text-xs font-bold text-white">{actualWinner.prize.name}</div>
+                            <div className="text-sm font-bold text-white truncate max-w-[140px]">{actualWinner.prize.name}</div>
                           </div>
                         )}
                         
-                        <div className="text-2xl mt-2">
+                        <div className="text-3xl mt-3">
                           {getRankIcon(actualWinner.position || 1)}
                         </div>
                       </div>
@@ -370,22 +379,21 @@ function App() {
 
                 {/* All Winners Table */}
                 {winners.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-center text-purple-400">All Prize Winners</h3>
-                    <div className="leaderboard-container max-h-96 overflow-y-auto">
-                      <div className="space-y-2">
+                  <div className="section-spacing">
+                    <h3 className="text-2xl font-bold text-center text-purple-400 mb-6">All Prize Winners</h3>
+                    <div className="leaderboard-container max-h-[500px] overflow-y-auto">
                         {winners.map((winner, index) => (
                           <div
                             key={winner.id}
-                            className={`leaderboard-row ${getRankGlow(winner.position || 1)} p-4 rounded-lg flex items-center gap-4 animate-slide-in-left`}
+                            className={`leaderboard-row ${getRankGlow(winner.position || 1)} flex items-center gap-6 animate-slide-in-left`}
                             style={{ animationDelay: `${index * 0.1}s` }}
                           >
-                            <div className="flex items-center gap-2 min-w-[60px]">
-                              <span className="text-2xl font-bold">#{winner.position}</span>
+                            <div className="flex items-center gap-3 min-w-[80px]">
+                              <span className="text-3xl font-bold">#{winner.position}</span>
                               {getRankIcon(winner.position || 1)}
                             </div>
                             
-                            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-current">
+                            <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-current flex-shrink-0">
                               {winner.picture ? (
                                 <img 
                                   src={winner.picture} 
@@ -400,14 +408,14 @@ function App() {
                             </div>
                             
                             <div className="flex-1">
-                              <div className="font-bold text-white text-lg">{winner.name}</div>
+                              <div className="font-bold text-white text-xl mb-1">{winner.name}</div>
                               <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
                             </div>
                             
                             {winner.prize && (
-                              <div className="flex items-center gap-3 min-w-[200px]">
+                              <div className="flex items-center gap-4 min-w-[250px] flex-shrink-0">
                                 {winner.prize.picture ? (
-                                  <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-current">
+                                  <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
                                     <img 
                                       src={winner.prize.picture} 
                                       alt={winner.prize.name}
@@ -420,14 +428,13 @@ function App() {
                                   </div>
                                 )}
                                 <div>
-                                  <div className="font-bold text-white">{winner.prize.name}</div>
-                                  <div className="text-sm text-yellow-300">{winner.prize.value}</div>
+                                  <div className="font-bold text-white text-lg">{winner.prize.name}</div>
+                                  <div className="text-base text-yellow-300">{winner.prize.value}</div>
                                 </div>
                               </div>
                             )}
                           </div>
                         ))}
-                      </div>
                     </div>
                   </div>
                 )}
@@ -436,19 +443,19 @@ function App() {
 
             {/* Remaining Participants */}
             {remainingParticipants.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-center text-cyan-400">All Participants</h3>
-                <div className="leaderboard-container max-h-64 overflow-y-auto">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="section-spacing">
+                <h3 className="text-2xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
+                <div className="leaderboard-container max-h-80 overflow-y-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {remainingParticipants.map((participant, index) => (
                       <div
                         key={participant.id}
-                        className="participant-card p-3 rounded-lg border border-purple-400/30 bg-purple-900/10 backdrop-blur-sm animate-slide-in"
+                        className="participant-card animate-slide-in"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-bold text-purple-300 min-w-[30px]">#{participant.position}</span>
-                          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400/50">
+                        <div className="flex items-center gap-4">
+                          <span className="text-base font-bold text-purple-300 min-w-[40px]">#{participant.position}</span>
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-400/50 flex-shrink-0">
                             {participant.picture ? (
                               <img 
                                 src={participant.picture} 
@@ -462,8 +469,8 @@ function App() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-bold text-white text-sm truncate">{participant.name}</div>
-                            <div className="text-xs text-gray-400 truncate">ID: {participant.id.slice(-8)}</div>
+                            <div className="font-bold text-white text-base truncate">{participant.name}</div>
+                            <div className="text-sm text-gray-400 truncate">ID: {participant.id.slice(-8)}</div>
                           </div>
                         </div>
                       </div>
@@ -473,7 +480,7 @@ function App() {
               </div>
             )}
 
-            <div className="text-center pt-6">
+            <div className="text-center pt-8">
               <button
                 onClick={resetGame}
                 className="px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105"
