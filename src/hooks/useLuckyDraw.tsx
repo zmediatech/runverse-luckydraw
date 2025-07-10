@@ -26,7 +26,8 @@ export const useLuckyDraw = () => {
   };
 
   const getRarityForPosition = (position: string) => {
-    switch (position) {
+    const pos = position.toString();
+    switch (pos) {
       case '1': return 'legendary' as const;
       case '2': return 'epic' as const;
       case '3': return 'rare' as const;
@@ -53,17 +54,21 @@ export const useLuckyDraw = () => {
         const drawData = await fetchLuckyDrawData(EVENT_ID);
         setLuckyDrawData(drawData);
 
-        // Fetch participant details
-        const participantDetails = await fetchParticipantDetails(drawData.participants);
+        // Use participant data directly from API
+        const participantDetails = drawData.participants.map(participant => ({
+          id: participant.userId,
+          name: participant.name,
+          picture: participant.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.userId}&backgroundColor=b6e3f4,c0aede,d1d4f9`
+        }));
 
         // Convert rewards to prizes format
         const convertedPrizes: Prize[] = drawData.rewards.map((reward, index) => ({
           id: index + 1,
           name: reward.title.toUpperCase(),
-          value: `POSITION ${reward.position}`,
+          value: `POSITION ${reward.position.toString()}`,
           icon: getIconForReward(reward.title),
-          rarity: getRarityForPosition(reward.position),
-          color: getColorForRarity(getRarityForPosition(reward.position)),
+          rarity: getRarityForPosition(reward.position.toString()),
+          color: getColorForRarity(getRarityForPosition(reward.position.toString())),
           picture: reward.picture
         }));
 
@@ -76,7 +81,7 @@ export const useLuckyDraw = () => {
         // Create winners array with assigned prizes
         const winnersWithPrizes = convertedPrizes.map((prize, index) => ({
           ...shuffledParticipants[index],
-          position: parseInt(prize.value.split(' ')[1]), // Extract position number
+          position: parseInt(prize.value.split(' ')[1]) || index + 1, // Extract position number
           prize: prize
         })).sort((a, b) => (a.position || 0) - (b.position || 0));
 
@@ -108,7 +113,7 @@ export const useLuckyDraw = () => {
     loading,
     error,
     participantCount: participants.length,
-    totalEntries: luckyDrawData?.maxTotalEntries || 0,
+    totalEntries: luckyDrawData?.maxTotalEntries || participants.length,
     numWinners: luckyDrawData?.numWinners || 0
   };
 };

@@ -18,7 +18,13 @@ export interface Prize {
 export interface LuckyDrawReward {
   title: string;
   picture: string;
-  position: string;
+  position: string | number;
+}
+
+export interface LuckyDrawParticipant {
+  userId: string;
+  name: string;
+  picture?: string;
 }
 
 export interface LuckyDrawResponse {
@@ -43,7 +49,7 @@ export interface LuckyDrawResponse {
     _nanoseconds: number;
   };
   rewards: LuckyDrawReward[];
-  participants: string[];
+  participants: LuckyDrawParticipant[];
 }
 
 export interface Participant {
