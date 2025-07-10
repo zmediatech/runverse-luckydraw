@@ -1,6 +1,6 @@
 import { LuckyDrawResponse } from '../types';
 
-const API_BASE_URL = 'https://runverse-backend.vercel.app/api';
+const API_BASE_URL = '/api';
 
 // Mock data fallback
 const mockLuckyDrawData: LuckyDrawResponse = {
