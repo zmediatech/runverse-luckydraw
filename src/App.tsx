@@ -106,13 +106,11 @@ function App() {
 
     setGameState('ticker');
     
-    // Only play spinning music if audio is enabled
-    if (isAudioEnabled) {
-      stopAllAudio();
-      setTimeout(() => {
-        playTickerSound();
-      }, 200);
-    }
+    // Always play spinning music (user can mute if needed)
+    stopAllAudio();
+    setTimeout(() => {
+      playTickerSound();
+    }, 200);
     
     setTickerSpeed(80);
     
@@ -147,10 +145,8 @@ function App() {
             // Show celebration effects and go directly to results
             setShowCelebration(true);
             
-            // Only play winning sound if audio is enabled
-            if (isAudioEnabled) {
-              playWinningSound();
-            }
+            // Always play winning sound (user can mute if needed)
+            playWinningSound();
             
             setGameState('leaderboard');
             
@@ -404,25 +400,15 @@ function App() {
                 {/* Audio Enable Button */}
                 <div className="mt-4">
                   <button
-                    onClick={isAudioEnabled ? disableAudio : enableAudio}
+                    onClick={toggleMute}
                     className={`px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
                       isAudioEnabled 
                         ? 'bg-cyan-600/20 border-cyan-400 text-cyan-400 hover:bg-cyan-600/30' 
                         : 'bg-gray-600/20 border-gray-400 text-gray-400 hover:bg-gray-600/30'
                     }`}
                   >
-                    {isAudioEnabled ? '🔊 Audio Enabled' : '🔇 Enable Audio'}
+                    {isAudioEnabled ? '🔊 Music Playing' : '🔇 Music Muted'}
                   </button>
-                  {isAudioEnabled && (
-                    <div className="mt-2">
-                      <button
-                        onClick={playBackgroundMusic}
-                        className="px-4 py-2 text-sm bg-purple-600/20 border border-purple-400 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors"
-                      >
-                        🎵 Play Background Music
-                      </button>
-                    </div>
-                  )}
                 </div>
                 
                 {participants.length === 0 && (

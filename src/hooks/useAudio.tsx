@@ -4,7 +4,7 @@ export const useAudio = () => {
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const tickerSoundRef = useRef<HTMLAudioElement | null>(null);
   const winningSoundRef = useRef<HTMLAudioElement | null>(null);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +33,17 @@ export const useAudio = () => {
       winningSoundRef.current.preload = 'auto';
     }
 
+    // Auto-start background music when component mounts
+    const startAutoMusic = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Small delay for better UX
+        await playBackgroundMusic();
+      } catch (error) {
+        console.log('Auto-play prevented by browser, user interaction required');
+      }
+    };
+    
+    startAutoMusic();
     return () => {
       // Cleanup audio elements
       if (backgroundMusicRef.current) {
@@ -48,11 +59,13 @@ export const useAudio = () => {
         winningSoundRef.current = null;
       }
     };
-  }, []);
+  }, [playBackgroundMusic]);
 
   const enableAudio = async () => {
     try {
       setIsAudioEnabled(true);
+      // Start background music when enabling audio
+      await playBackgroundMusic();
       console.log('Audio enabled successfully');
       return true;
     } catch (error) {
