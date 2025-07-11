@@ -180,6 +180,7 @@ function App() {
     setWinnersSubmitted(false);
     setSubmissionError(null);
     setShowCelebration(false);
+    setShowCelebration(false);
   };
 
   const getRankIcon = (rank: number) => {

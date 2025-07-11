@@ -13,7 +13,7 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
   prizeName,
   onComplete
 }) => {
-  const [showEffects, setShowEffects] = useState(false);
+  const [showEffects, setShowEffects] = useState(show);
 
   useEffect(() => {
     if (show) {
@@ -26,8 +26,9 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
       }, 1500);
 
       return () => clearTimeout(timer);
+    } else {
+      setShowEffects(false);
     }
-  }, [show, onComplete]);
 
   if (!showEffects) return null;
 
