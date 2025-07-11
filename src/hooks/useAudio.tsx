@@ -8,59 +8,6 @@ export const useAudio = () => {
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Initialize audio elements
-    backgroundMusicRef.current = new Audio();
-    tickerSoundRef.current = new Audio();
-    winningSoundRef.current = new Audio();
-
-    // Set audio properties
-    if (backgroundMusicRef.current) {
-      backgroundMusicRef.current.loop = true;
-      backgroundMusicRef.current.volume = 0.4;
-      backgroundMusicRef.current.preload = 'auto';
-    }
-    
-    if (tickerSoundRef.current) {
-      tickerSoundRef.current.loop = true;
-      tickerSoundRef.current.volume = 0.5;
-      tickerSoundRef.current.preload = 'auto';
-    }
-    
-    if (winningSoundRef.current) {
-      winningSoundRef.current.loop = false;
-      winningSoundRef.current.volume = 0.7;
-      winningSoundRef.current.preload = 'auto';
-    }
-
-    // Auto-start background music when component mounts
-    const startAutoMusic = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // Small delay for better UX
-        await playBackgroundMusic();
-      } catch (error) {
-        console.log('Auto-play prevented by browser, user interaction required');
-      }
-    };
-    
-    startAutoMusic();
-    return () => {
-      // Cleanup audio elements
-      if (backgroundMusicRef.current) {
-        backgroundMusicRef.current.pause();
-        backgroundMusicRef.current = null;
-      }
-      if (tickerSoundRef.current) {
-        tickerSoundRef.current.pause();
-        tickerSoundRef.current = null;
-      }
-      if (winningSoundRef.current) {
-        winningSoundRef.current.pause();
-        winningSoundRef.current = null;
-      }
-    };
-  }, [playBackgroundMusic]);
-
   const enableAudio = async () => {
     try {
       setIsAudioEnabled(true);
@@ -280,7 +227,59 @@ export const useAudio = () => {
       enableAudio();
     }
   };
+
+  useEffect(() => {
+    // Initialize audio elements
+    backgroundMusicRef.current = new Audio();
+    tickerSoundRef.current = new Audio();
+    winningSoundRef.current = new Audio();
+
+    // Set audio properties
+    if (backgroundMusicRef.current) {
+      backgroundMusicRef.current.loop = true;
+      backgroundMusicRef.current.volume = 0.4;
+      backgroundMusicRef.current.preload = 'auto';
+    }
     
+    if (tickerSoundRef.current) {
+      tickerSoundRef.current.loop = true;
+      tickerSoundRef.current.volume = 0.5;
+      tickerSoundRef.current.preload = 'auto';
+    }
+    
+    if (winningSoundRef.current) {
+      winningSoundRef.current.loop = false;
+      winningSoundRef.current.volume = 0.7;
+      winningSoundRef.current.preload = 'auto';
+    }
+
+    // Auto-start background music when component mounts
+    const startAutoMusic = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Small delay for better UX
+        await playBackgroundMusic();
+      } catch (error) {
+        console.log('Auto-play prevented by browser, user interaction required');
+      }
+    };
+    
+    startAutoMusic();
+    return () => {
+      // Cleanup audio elements
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.pause();
+        backgroundMusicRef.current = null;
+      }
+      if (tickerSoundRef.current) {
+        tickerSoundRef.current.pause();
+        tickerSoundRef.current = null;
+      }
+      if (winningSoundRef.current) {
+        winningSoundRef.current.pause();
+        winningSoundRef.current = null;
+      }
+    };
+  }, [playBackgroundMusic]);
 
   return {
     isAudioEnabled,
