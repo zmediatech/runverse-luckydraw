@@ -10,8 +10,23 @@ export default defineConfig({
         target: 'https://runverse-backend.vercel.app',
         changeOrigin: true,
         secure: true,
+        rewrite: (path) => path,
         timeout: 60000, // Increased timeout to 60 seconds to prevent socket hang up
         configure: (proxy, _options) => {
+          // Handle OPTIONS requests for CORS preflight
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            if (req.method === 'OPTIONS') {
+              res.writeHead(200, {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Max-Age': '86400',
+              });
+              res.end();
+              return;
+            }
+          });
+          
           proxy.on('error', (err, req, res) => {
             console.log('Proxy error:', err.message);
             if (res && !res.headersSent) {
@@ -34,12 +49,10 @@ export default defineConfig({
             // Set proper headers for better compatibility
             proxyReq.setHeader('User-Agent', 'Lucky Draw App/1.0');
             proxyReq.setHeader('Accept', 'application/json');
-            proxyReq.setHeader('Connection', 'keep-alive');
-            // Add CORS headers for POST requests
-            if (req.method === 'POST') {
-              proxyReq.setHeader('Access-Control-Allow-Origin', '*');
-              proxyReq.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-              proxyReq.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            
+            // Ensure Content-Type is set for POST requests
+            if (req.method === 'POST' && !proxyReq.getHeader('Content-Type')) {
+              proxyReq.setHeader('Content-Type', 'application/json');
             }
           });
           
