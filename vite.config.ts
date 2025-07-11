@@ -35,10 +35,21 @@ export default defineConfig({
             proxyReq.setHeader('User-Agent', 'Lucky Draw App/1.0');
             proxyReq.setHeader('Accept', 'application/json');
             proxyReq.setHeader('Connection', 'keep-alive');
+            // Add CORS headers for POST requests
+            if (req.method === 'POST') {
+              proxyReq.setHeader('Access-Control-Allow-Origin', '*');
+              proxyReq.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+              proxyReq.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            }
           });
           
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Received Response from Target:', proxyRes.statusCode, req.url);
+            // Add CORS headers to response
+            proxyRes.headers['access-control-allow-origin'] = '*';
+            proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+            proxyRes.headers['access-control-allow-headers'] = 'Content-Type, Authorization';
+            
             if (proxyRes.statusCode && proxyRes.statusCode >= 400) {
               console.warn(`Backend returned error status: ${proxyRes.statusCode}`);
             }
@@ -50,6 +61,8 @@ export default defineConfig({
               res.writeHead(500, {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
               });
               res.end(JSON.stringify({
                 error: 'Connection failed',

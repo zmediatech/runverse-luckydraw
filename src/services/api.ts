@@ -132,13 +132,13 @@ export const submitWinners = async (eventId: string, winners: Array<{uid: string
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
       
-      const response = await fetch(`${API_BASE_URL}/luckydraws/draw/${eventId}`, {
+      const response = await fetch('https://runverse-backend.vercel.app/api/luckydraws/draw', {
         method: 'POST',
         signal: controller.signal,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
+          'Cache-Control': 'no-cache'
         },
         body: JSON.stringify(payload)
       });
@@ -146,7 +146,8 @@ export const submitWinners = async (eventId: string, winners: Array<{uid: string
       clearTimeout(timeoutId);
       
       if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status} ${response.statusText}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`API request failed with status: ${response.status} ${response.statusText}. Response: ${errorText}`);
       }
       
       const result = await response.json();
