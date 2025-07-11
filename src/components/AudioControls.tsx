@@ -19,9 +19,9 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
   const getTrackDisplay = () => {
     if (isLoading) return '⏳ Loading Audio...';
     switch (currentTrack) {
-      case 'background': return '🎪 Carnival Music';
-      case 'ticker': return '🎡 Spinning Wheel';
-      case 'winning': return '🎊 Ta-Da Celebration';
+      case 'background': return '🎵 Electronic Ambient';
+      case 'ticker': return '⚡ Digital Tension';
+      case 'winning': return '🏆 Electronic Victory';
       default: return '🔇 No Audio';
     }
   };
