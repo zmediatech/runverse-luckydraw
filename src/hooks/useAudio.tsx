@@ -128,40 +128,40 @@ export const useAudio = () => {
         backgroundMusicRef.current.pause();
       }
       
-      // Ticker spin sound sources
-      const tickerSources = [
-        'https://www.soundjay.com/misc/sounds/slot-machine-spin.mp3',
-        'https://freesound.org/data/previews/270/270324_4388723-lq.mp3',
-        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_slot_machine_spin_001.mp3'
+      // Spinning music sources - upbeat music for spinning
+      const spinMusicSources = [
+        'https://www.soundjay.com/misc/sounds/spinning-wheel-music.mp3',
+        'https://freesound.org/data/previews/316/316738_5123451-lq.mp3',
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_spinning_music_001.mp3'
       ];
 
       let sourceIndex = 0;
       const tryNextSource = () => {
-        if (sourceIndex < tickerSources.length && tickerSoundRef.current) {
-          tickerSoundRef.current.src = tickerSources[sourceIndex];
+        if (sourceIndex < spinMusicSources.length && tickerSoundRef.current) {
+          tickerSoundRef.current.src = spinMusicSources[sourceIndex];
           sourceIndex++;
         } else if (tickerSoundRef.current) {
-          // Fallback to generated ticker sound
-          tickerSoundRef.current.src = createTickerSpinSound();
+          // Fallback to generated spin music
+          tickerSoundRef.current.src = createSpinMusic();
         }
       };
 
       tickerSoundRef.current.onerror = tryNextSource;
       tryNextSource();
 
-      setCurrentTrack('ticker');
+      setCurrentTrack('spinning');
       await tickerSoundRef.current.play();
-      console.log('Ticker spin sound started');
+      console.log('Spinning music started');
     } catch (error) {
-      console.warn('Ticker sound could not be played:', error);
-      // Fallback to generated sound
+      console.warn('Spinning music could not be played:', error);
+      // Fallback to generated music
       try {
         if (tickerSoundRef.current) {
-          tickerSoundRef.current.src = createTickerSpinSound();
+          tickerSoundRef.current.src = createSpinMusic();
           await tickerSoundRef.current.play();
         }
       } catch (fallbackError) {
-        console.warn('Fallback ticker sound also failed:', fallbackError);
+        console.warn('Fallback spinning music also failed:', fallbackError);
       }
     } finally {
       setIsLoading(false);
@@ -174,16 +174,16 @@ export const useAudio = () => {
     try {
       setIsLoading(true);
       
-      // Stop ticker sound
+      // Stop spinning music
       if (tickerSoundRef.current) {
         tickerSoundRef.current.pause();
       }
       
-      // Congratulations sound sources
+      // Decent congratulations sound sources
       const winningSources = [
-        'https://www.soundjay.com/misc/sounds/congratulations-1.mp3',
-        'https://freesound.org/data/previews/316/316847_5123451-lq.mp3',
-        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_congratulations_001.mp3'
+        'https://www.soundjay.com/misc/sounds/ta-da.mp3',
+        'https://freesound.org/data/previews/316/316847_5123451-lq.mp3', 
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_ta_da_001.mp3'
       ];
 
       let sourceIndex = 0;
@@ -192,23 +192,34 @@ export const useAudio = () => {
           winningSoundRef.current.src = winningSources[sourceIndex];
           sourceIndex++;
         } else if (winningSoundRef.current) {
-          // Fallback to generated congratulations sound
-          winningSoundRef.current.src = createCongratsSound();
+          // Fallback to generated decent congratulations sound
+          winningSoundRef.current.src = createDecentCongratsSound();
         }
       };
 
       winningSoundRef.current.onerror = tryNextSource;
       tryNextSource();
 
+      // Reset to beginning and ensure it plays only once
+      winningSoundRef.current.currentTime = 0;
+      winningSoundRef.current.loop = false;
+
       setCurrentTrack('winning');
       await winningSoundRef.current.play();
-      console.log('Congratulations sound started');
+      console.log('Congratulations sound started (plays once)');
+      
+      // Clear current track when sound ends
+      winningSoundRef.current.onended = () => {
+        setCurrentTrack(null);
+      };
     } catch (error) {
       console.warn('Winning sound could not be played:', error);
       // Fallback to generated sound
       try {
         if (winningSoundRef.current) {
-          winningSoundRef.current.src = createCongratsSound();
+          winningSoundRef.current.src = createDecentCongratsSound();
+          winningSoundRef.current.currentTime = 0;
+          winningSoundRef.current.loop = false;
           await winningSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -293,12 +304,12 @@ const createLuckyDrawMusic = (): string => {
   }
 };
 
-// Create ticker spin sound
-const createTickerSpinSound = (): string => {
+// Create spinning music
+const createSpinMusic = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 1.5; // 1.5 second loop
+    const duration = 3; // 3 second loop for music
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -309,31 +320,32 @@ const createTickerSpinSound = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create ticker spin sound
-        const tick = Math.sin(2 * Math.PI * 800 * time) * Math.exp(-time * 3) * 0.5;
-        const spin = Math.sin(2 * Math.PI * 200 * time * (1 + time)) * 0.3;
-        const whoosh = Math.sin(2 * Math.PI * 100 * time) * Math.sin(2 * Math.PI * 10 * time) * 0.2;
+        // Create upbeat spinning music
+        const melody = Math.sin(2 * Math.PI * 440 * time) * 0.3; // A4
+        const harmony = Math.sin(2 * Math.PI * 554.37 * time) * 0.2; // C#5
+        const bass = Math.sin(2 * Math.PI * 220 * time) * 0.4; // A3
+        const rhythm = Math.sin(2 * Math.PI * 880 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.15; // A5 rhythm
         
-        // Add mechanical clicking
-        const click = Math.sin(2 * Math.PI * 1200 * time) * Math.sin(2 * Math.PI * 15 * time) * 0.15;
+        // Add excitement
+        const excitement = Math.sin(2 * Math.PI * 1760 * time) * Math.sin(2 * Math.PI * 2 * time) * 0.1;
         
-        channelData[i] = (tick + spin + whoosh + click) * 0.8;
+        channelData[i] = (melody + harmony + bass + rhythm + excitement) * 0.7;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create ticker sound:', error);
+    console.warn('Could not create spinning music:', error);
     return '';
   }
 };
 
-// Create congratulations sound
-const createCongratsSound = (): string => {
+// Create decent congratulations sound
+const createDecentCongratsSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 3; // 3 seconds
+    const duration = 2.5; // 2.5 seconds - plays once
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -344,25 +356,24 @@ const createCongratsSound = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create congratulations fanfare
-        const trumpet1 = Math.sin(2 * Math.PI * 523.25 * time) * 0.4; // C5
-        const trumpet2 = Math.sin(2 * Math.PI * 659.25 * time) * 0.3; // E5
-        const trumpet3 = Math.sin(2 * Math.PI * 783.99 * time) * 0.25; // G5
+        // Create decent congratulations sound - Ta-Da style
+        const mainNote = Math.sin(2 * Math.PI * 523.25 * time) * 0.5; // C5
+        const harmony1 = Math.sin(2 * Math.PI * 659.25 * time) * 0.3; // E5
+        const harmony2 = Math.sin(2 * Math.PI * 783.99 * time) * 0.2; // G5
         
-        // Add celebration effects
-        const chimes = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.2;
-        const applause = (Math.random() - 0.5) * 0.1 * Math.sin(2 * Math.PI * 2 * time);
+        // Add sparkle effect
+        const sparkle = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 6 * time) * 0.15;
         
-        // Envelope for natural progression
-        const envelope = Math.max(0, 1 - time / duration) * (0.8 + 0.2 * Math.sin(2 * Math.PI * 3 * time));
+        // Natural envelope that fades out
+        const envelope = Math.max(0, 1 - (time / duration) * 0.8) * (0.9 + 0.1 * Math.sin(2 * Math.PI * 2 * time));
         
-        channelData[i] = (trumpet1 + trumpet2 + trumpet3 + chimes + applause) * envelope * 0.7;
+        channelData[i] = (mainNote + harmony1 + harmony2 + sparkle) * envelope * 0.8;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create congratulations sound:', error);
+    console.warn('Could not create decent congratulations sound:', error);
     return '';
   }
 };
