@@ -347,7 +347,7 @@ function App() {
               {/* Winner Announcement */}
               {selectedParticipant && wonPrize && (
                 <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400 rounded-xl p-8 mb-8 animate-slide-in">
-                  <h2 className="text-3xl font-bold text-yellow-400 mb-4">🏆 WINNER 🏆</h2>
+                  <h2 className="text-3xl font-bold text-yellow-400 mb-4">🏆 {luckyDrawData?.eventId || 'LUCKY DRAW EVENT'} 🏆</h2>
                   <div className="flex items-center justify-center gap-6 mb-4">
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400">
                       {selectedParticipant.picture ? (
