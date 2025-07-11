@@ -313,8 +313,8 @@ function App() {
               <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-cyan-400 to-pink-400 neon-glow-text">
                 LUCKY DRAW RESULTS
               </h1>
-              <p className="text-lg text-cyan-300">Tournament Champions & All Participants</p>
-              <div className="flex justify-center gap-8 text-sm text-purple-300 mt-4">
+              <p className="text-xl text-cyan-300 font-light">Tournament Champions & All Participants</p>
+              <div className="flex justify-center gap-12 text-base text-purple-300 mt-6">
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   <span>{participantCount} Total Participants</span>
@@ -328,13 +328,13 @@ function App() {
 
             {/* Top 3 Winners Podium */}
             {winners.length > 0 && (
-              <div className="section-spacing">
-                <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text">
+              <div className="section-spacing mt-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-yellow-400 neon-glow-text mb-12">
                   🏆 PRIZE WINNERS 🏆
                 </h2>
                 
                 {/* Top 3 Podium */}
-                <div className="flex justify-center items-end gap-6 mb-12">
+                <div className="flex justify-center items-end gap-8 mb-16">
                   {winners.slice(0, 3).map((winner, index) => {
                     const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd for visual arrangement
                     const actualIndex = podiumOrder[index];
@@ -346,11 +346,11 @@ function App() {
                     return (
                       <div
                         key={actualWinner.id}
-                        className={`podium-card ${getRankGlow(actualWinner.position || 1)} p-6 rounded-xl ${heights[index]} flex flex-col justify-between items-center animate-slide-in backdrop-blur-sm min-w-[160px]`}
+                        className={`podium-card ${getRankGlow(actualWinner.position || 1)} p-8 rounded-xl ${heights[index]} flex flex-col justify-between items-center animate-slide-in backdrop-blur-sm min-w-[180px]`}
                         style={{ animationDelay: `${index * 0.2}s` }}
                       >
                         <div className="text-center">
-                          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current mb-4 mx-auto">
+                          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-current mb-6 mx-auto">
                             {actualWinner.picture ? (
                               <img 
                                 src={actualWinner.picture} 
@@ -363,14 +363,14 @@ function App() {
                               </div>
                             )}
                           </div>
-                          <div className="font-bold text-white text-base mb-2 truncate max-w-[140px]">{actualWinner.name}</div>
-                          <div className="text-sm opacity-75 mb-3">Position {actualWinner.position}</div>
+                          <div className="font-bold text-white text-lg mb-3 truncate max-w-[160px]">{actualWinner.name}</div>
+                          <div className="text-sm opacity-75 mb-4">Position {actualWinner.position}</div>
                         </div>
                         
                         {actualWinner.prize && (
-                          <div className="text-center mt-2">
+                          <div className="text-center mt-4">
                             {actualWinner.prize.picture ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border-2 border-current mx-auto mb-3">
+                              <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current mx-auto mb-4">
                                 <img 
                                   src={actualWinner.prize.picture} 
                                   alt={actualWinner.prize.name}
@@ -378,15 +378,15 @@ function App() {
                                 />
                               </div>
                             ) : (
-                              <div className={`${actualWinner.prize.color} mb-3 flex justify-center`}>
+                              <div className={`${actualWinner.prize.color} mb-4 flex justify-center`}>
                                 {actualWinner.prize.icon}
                               </div>
                             )}
-                            <div className="text-sm font-bold text-white truncate max-w-[140px]">{actualWinner.prize.name}</div>
+                            <div className="text-base font-bold text-white truncate max-w-[160px]">{actualWinner.prize.name}</div>
                           </div>
                         )}
                         
-                        <div className="text-3xl mt-3">
+                        <div className="text-4xl mt-4">
                           {getRankIcon(actualWinner.position || 1)}
                         </div>
                       </div>
@@ -396,21 +396,21 @@ function App() {
 
                 {/* All Winners Table */}
                 {winners.length > 0 && (
-                  <div className="section-spacing">
-                    <h3 className="text-2xl font-bold text-center text-purple-400 mb-8 mt-12">All Prize Winners</h3>
-                    <div className="leaderboard-container max-h-[500px] overflow-y-auto">
+                  <div className="section-spacing mt-20">
+                    <h3 className="text-2xl md:text-3xl font-bold text-center text-purple-400 mb-10">All Prize Winners</h3>
+                    <div className="leaderboard-container max-h-[600px] overflow-y-auto">
                         {winners.map((winner, index) => (
                           <div
                             key={winner.id}
-                            className={`leaderboard-row ${getRankGlow(winner.position || 1)} flex items-center gap-8 animate-slide-in-left`}
+                            className={`leaderboard-row ${getRankGlow(winner.position || 1)} flex items-center gap-10 animate-slide-in-left`}
                             style={{ animationDelay: `${index * 0.1}s` }}
                           >
-                            <div className="flex items-center gap-4 min-w-[100px]">
-                              <span className="text-3xl font-bold"># {winner.position}</span>
+                            <div className="flex items-center gap-6 min-w-[120px]">
+                              <span className="text-3xl font-bold text-center min-w-[60px]"># {winner.position}</span>
                               {getRankIcon(winner.position || 1)}
                             </div>
                             
-                            <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-current flex-shrink-0 ml-2">
+                            <div className="w-18 h-18 rounded-full overflow-hidden border-3 border-current flex-shrink-0">
                               {winner.picture ? (
                                 <img 
                                   src={winner.picture} 
@@ -424,15 +424,15 @@ function App() {
                               )}
                             </div>
                             
-                            <div className="flex-1 ml-4">
-                              <div className="font-bold text-white text-xl mb-1">{winner.name}</div>
-                              <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
+                            <div className="flex-1 ml-6">
+                              <div className="font-bold text-white text-xl mb-2">{winner.name}</div>
+                              <div className="text-base opacity-75">ID: {winner.id.slice(-8)}</div>
                             </div>
                             
                             {winner.prize && (
-                              <div className="flex items-center gap-6 min-w-[280px] flex-shrink-0 ml-6">
+                              <div className="flex items-center gap-8 min-w-[320px] flex-shrink-0">
                                 {winner.prize.picture ? (
-                                  <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
+                                  <div className="w-18 h-18 rounded-lg overflow-hidden border-2 border-current">
                                     <img 
                                       src={winner.prize.picture} 
                                       alt={winner.prize.name}
@@ -444,9 +444,9 @@ function App() {
                                     {winner.prize.icon}
                                   </div>
                                 )}
-                                <div className="ml-2">
-                                  <div className="font-bold text-white text-lg">{winner.prize.name}</div>
-                                  <div className="text-base text-yellow-300 mt-1">{winner.prize.value}</div>
+                                <div className="ml-4">
+                                  <div className="font-bold text-white text-xl">{winner.prize.name}</div>
+                                  <div className="text-lg text-yellow-300 mt-2">{winner.prize.value}</div>
                                 </div>
                               </div>
                             )}
@@ -460,19 +460,19 @@ function App() {
 
             {/* Remaining Participants */}
             {remainingParticipants.length > 0 && (
-              <div className="section-spacing">
-                <h3 className="text-2xl font-bold text-center text-cyan-400 mb-8">All Participants</h3>
-                <div className="leaderboard-container max-h-80 overflow-y-auto">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="section-spacing mt-20">
+                <h3 className="text-2xl md:text-3xl font-bold text-center text-cyan-400 mb-10">All Participants</h3>
+                <div className="leaderboard-container max-h-96 overflow-y-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {remainingParticipants.map((participant, index) => (
                       <div
                         key={participant.id}
                         className="participant-card animate-slide-in"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <div className="flex items-center gap-5">
-                          <span className="text-base font-bold text-purple-300 min-w-[50px]"># {participant.position}</span>
-                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-400/50 flex-shrink-0">
+                        <div className="flex items-center gap-6">
+                          <span className="text-lg font-bold text-purple-300 min-w-[60px]"># {participant.position}</span>
+                          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-400/50 flex-shrink-0">
                             {participant.picture ? (
                               <img 
                                 src={participant.picture} 
@@ -485,9 +485,9 @@ function App() {
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0 ml-2">
-                            <div className="font-bold text-white text-base truncate">{participant.name}</div>
-                            <div className="text-sm text-gray-400 truncate mt-1">ID: {participant.id.slice(-8)}</div>
+                          <div className="flex-1 min-w-0 ml-4">
+                            <div className="font-bold text-white text-lg truncate">{participant.name}</div>
+                            <div className="text-base text-gray-400 truncate mt-2">ID: {participant.id.slice(-8)}</div>
                           </div>
                         </div>
                       </div>
@@ -497,10 +497,10 @@ function App() {
               </div>
             )}
 
-            <div className="text-center pt-12">
+            <div className="text-center pt-16">
               <button
                 onClick={resetGame}
-                className="px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105"
+                className="px-12 py-4 text-xl font-bold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105"
               >
                 SPIN AGAIN
               </button>
