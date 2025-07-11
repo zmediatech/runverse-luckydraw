@@ -77,11 +77,11 @@ export const useAudio = () => {
         winningSoundRef.current.currentTime = 0;
       }
 
-      // Cool electronic background music sources
+      // Lucky draw themed background music sources
       const musicSources = [
-        'https://www.soundjay.com/misc/sounds/electronic-music-1.mp3',
+        'https://www.soundjay.com/misc/sounds/casino-ambience-1.mp3',
         'https://freesound.org/data/previews/316/316738_5123451-lq.mp3',
-        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_music_electronic_ambient_loop_001.mp3'
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_casino_ambience_001.mp3'
       ];
 
       let sourceIndex = 0;
@@ -90,8 +90,8 @@ export const useAudio = () => {
           backgroundMusicRef.current.src = musicSources[sourceIndex];
           sourceIndex++;
         } else if (backgroundMusicRef.current) {
-          // Fallback to generated cool electronic music
-          backgroundMusicRef.current.src = createCoolElectronicMusic();
+          // Fallback to generated lucky draw music
+          backgroundMusicRef.current.src = createLuckyDrawMusic();
         }
       };
 
@@ -100,13 +100,13 @@ export const useAudio = () => {
 
       setCurrentTrack('background');
       await backgroundMusicRef.current.play();
-      console.log('Cool electronic music started');
+      console.log('Lucky draw music started');
     } catch (error) {
       console.warn('Background music could not be played:', error);
-      // Try with generated cool music
+      // Try with generated music
       try {
         if (backgroundMusicRef.current) {
-          backgroundMusicRef.current.src = createCoolElectronicMusic();
+          backgroundMusicRef.current.src = createLuckyDrawMusic();
           await backgroundMusicRef.current.play();
         }
       } catch (fallbackError) {
@@ -128,11 +128,11 @@ export const useAudio = () => {
         backgroundMusicRef.current.pause();
       }
       
-      // Cool electronic ticker sounds
+      // Ticker spin sound sources
       const tickerSources = [
-        'https://www.soundjay.com/misc/sounds/electronic-beep-1.mp3',
+        'https://www.soundjay.com/misc/sounds/slot-machine-spin.mp3',
         'https://freesound.org/data/previews/270/270324_4388723-lq.mp3',
-        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_electronic_tension_001.mp3'
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_slot_machine_spin_001.mp3'
       ];
 
       let sourceIndex = 0;
@@ -141,8 +141,8 @@ export const useAudio = () => {
           tickerSoundRef.current.src = tickerSources[sourceIndex];
           sourceIndex++;
         } else if (tickerSoundRef.current) {
-          // Fallback to generated cool ticker
-          tickerSoundRef.current.src = createCoolTickerSound();
+          // Fallback to generated ticker sound
+          tickerSoundRef.current.src = createTickerSpinSound();
         }
       };
 
@@ -151,13 +151,13 @@ export const useAudio = () => {
 
       setCurrentTrack('ticker');
       await tickerSoundRef.current.play();
-      console.log('Cool ticker sound started');
+      console.log('Ticker spin sound started');
     } catch (error) {
       console.warn('Ticker sound could not be played:', error);
       // Fallback to generated sound
       try {
         if (tickerSoundRef.current) {
-          tickerSoundRef.current.src = createCoolTickerSound();
+          tickerSoundRef.current.src = createTickerSpinSound();
           await tickerSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -179,11 +179,11 @@ export const useAudio = () => {
         tickerSoundRef.current.pause();
       }
       
-      // Cool electronic winning sounds
+      // Congratulations sound sources
       const winningSources = [
-        'https://www.soundjay.com/misc/sounds/electronic-victory-1.mp3',
+        'https://www.soundjay.com/misc/sounds/congratulations-1.mp3',
         'https://freesound.org/data/previews/316/316847_5123451-lq.mp3',
-        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_electronic_win_001.mp3'
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_congratulations_001.mp3'
       ];
 
       let sourceIndex = 0;
@@ -192,8 +192,8 @@ export const useAudio = () => {
           winningSoundRef.current.src = winningSources[sourceIndex];
           sourceIndex++;
         } else if (winningSoundRef.current) {
-          // Fallback to generated cool victory
-          winningSoundRef.current.src = createCoolVictorySound();
+          // Fallback to generated congratulations sound
+          winningSoundRef.current.src = createCongratsSound();
         }
       };
 
@@ -202,13 +202,13 @@ export const useAudio = () => {
 
       setCurrentTrack('winning');
       await winningSoundRef.current.play();
-      console.log('Cool victory sound started');
+      console.log('Congratulations sound started');
     } catch (error) {
       console.warn('Winning sound could not be played:', error);
       // Fallback to generated sound
       try {
         if (winningSoundRef.current) {
-          winningSoundRef.current.src = createCoolVictorySound();
+          winningSoundRef.current.src = createCongratsSound();
           await winningSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -257,12 +257,12 @@ export const useAudio = () => {
   };
 };
 
-// Create cool electronic background music
-const createCoolElectronicMusic = (): string => {
+// Create lucky draw themed background music
+const createLuckyDrawMusic = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 12; // 12 seconds loop
+    const duration = 10; // 10 seconds loop
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -273,34 +273,32 @@ const createCoolElectronicMusic = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create cool electronic ambient music
-        const bass = Math.sin(2 * Math.PI * 55 * time) * 0.4; // Deep bass
-        const lead = Math.sin(2 * Math.PI * 220 * time * (1 + 0.1 * Math.sin(2 * Math.PI * 0.5 * time))) * 0.3; // Modulated lead
-        const pad = Math.sin(2 * Math.PI * 110 * time) * Math.sin(2 * Math.PI * 0.25 * time) * 0.2; // Ambient pad
-        const arp = Math.sin(2 * Math.PI * 440 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.15; // Arpeggiated synth
+        // Create lucky draw themed music
+        const melody = Math.sin(2 * Math.PI * 261.63 * time) * 0.3; // C4
+        const harmony = Math.sin(2 * Math.PI * 329.63 * time) * 0.2; // E4
+        const bass = Math.sin(2 * Math.PI * 130.81 * time) * 0.4; // C3
+        const rhythm = Math.sin(2 * Math.PI * 523.25 * time) * Math.sin(2 * Math.PI * 2 * time) * 0.15; // C5 rhythm
         
-        // Add some electronic texture
-        const noise = (Math.random() - 0.5) * 0.05;
-        const filter = Math.sin(2 * Math.PI * 880 * time * (1 + 0.2 * Math.sin(2 * Math.PI * 0.1 * time))) * 0.1;
+        // Add some sparkle
+        const sparkle = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 0.5 * time) * 0.1;
         
-        // Combine for cool electronic sound
-        channelData[i] = (bass + lead + pad + arp + noise + filter) * 0.6;
+        channelData[i] = (melody + harmony + bass + rhythm + sparkle) * 0.6;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create cool electronic music:', error);
+    console.warn('Could not create lucky draw music:', error);
     return '';
   }
 };
 
-// Create cool electronic ticker sound
-const createCoolTickerSound = (): string => {
+// Create ticker spin sound
+const createTickerSpinSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 1.2; // 1.2 second loop
+    const duration = 1.5; // 1.5 second loop
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -311,32 +309,31 @@ const createCoolTickerSound = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create cool electronic tension sound
-        const tension = Math.sin(2 * Math.PI * 150 * time * (1 + time * 3)) * Math.exp(-time * 2) * 0.4;
-        const beep = Math.sin(2 * Math.PI * 800 * time) * Math.exp(-time * 5) * 0.3;
-        const sweep = Math.sin(2 * Math.PI * 400 * time * (1 + time * 2)) * 0.2;
-        const digital = Math.sin(2 * Math.PI * 1600 * time) * Math.sin(2 * Math.PI * 20 * time) * 0.15;
+        // Create ticker spin sound
+        const tick = Math.sin(2 * Math.PI * 800 * time) * Math.exp(-time * 3) * 0.5;
+        const spin = Math.sin(2 * Math.PI * 200 * time * (1 + time)) * 0.3;
+        const whoosh = Math.sin(2 * Math.PI * 100 * time) * Math.sin(2 * Math.PI * 10 * time) * 0.2;
         
-        // Add electronic glitch effects
-        const glitch = Math.sin(2 * Math.PI * 2400 * time) * Math.sin(2 * Math.PI * 50 * time) * 0.1;
+        // Add mechanical clicking
+        const click = Math.sin(2 * Math.PI * 1200 * time) * Math.sin(2 * Math.PI * 15 * time) * 0.15;
         
-        channelData[i] = (tension + beep + sweep + digital + glitch) * 0.8;
+        channelData[i] = (tick + spin + whoosh + click) * 0.8;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create cool ticker sound:', error);
+    console.warn('Could not create ticker sound:', error);
     return '';
   }
 };
 
-// Create cool electronic victory sound
-const createCoolVictorySound = (): string => {
+// Create congratulations sound
+const createCongratsSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 4; // 4 seconds
+    const duration = 3; // 3 seconds
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -347,27 +344,25 @@ const createCoolVictorySound = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create cool electronic victory sound
-        const lead = Math.sin(2 * Math.PI * 440 * time) * 0.4; // A4
-        const harmony1 = Math.sin(2 * Math.PI * 554 * time) * 0.3; // C#5
-        const harmony2 = Math.sin(2 * Math.PI * 659 * time) * 0.25; // E5
-        const bass = Math.sin(2 * Math.PI * 110 * time) * 0.3; // A2
+        // Create congratulations fanfare
+        const trumpet1 = Math.sin(2 * Math.PI * 523.25 * time) * 0.4; // C5
+        const trumpet2 = Math.sin(2 * Math.PI * 659.25 * time) * 0.3; // E5
+        const trumpet3 = Math.sin(2 * Math.PI * 783.99 * time) * 0.25; // G5
         
-        // Add electronic effects
-        const synth = Math.sin(2 * Math.PI * 880 * time * (1 + 0.1 * Math.sin(time * 10))) * 0.2;
-        const digital = Math.sin(2 * Math.PI * 1760 * time) * Math.sin(2 * Math.PI * 8 * time) * 0.15;
-        const sweep = Math.sin(2 * Math.PI * 220 * time * (1 + time)) * 0.1;
+        // Add celebration effects
+        const chimes = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.2;
+        const applause = (Math.random() - 0.5) * 0.1 * Math.sin(2 * Math.PI * 2 * time);
         
         // Envelope for natural progression
-        const envelope = Math.max(0, 1 - time / duration) * (0.7 + 0.3 * Math.sin(2 * Math.PI * 4 * time));
+        const envelope = Math.max(0, 1 - time / duration) * (0.8 + 0.2 * Math.sin(2 * Math.PI * 3 * time));
         
-        channelData[i] = (lead + harmony1 + harmony2 + bass + synth + digital + sweep) * envelope * 0.7;
+        channelData[i] = (trumpet1 + trumpet2 + trumpet3 + chimes + applause) * envelope * 0.7;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create cool victory sound:', error);
+    console.warn('Could not create congratulations sound:', error);
     return '';
   }
 };
