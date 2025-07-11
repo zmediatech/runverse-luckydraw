@@ -29,6 +29,8 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
     } else {
       setShowEffects(false);
     }
+  }
+  )
 
   if (!showEffects) return null;
 
