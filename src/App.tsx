@@ -297,36 +297,112 @@ function App() {
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         {gameState === 'start' && (
-          <div className="text-center space-y-8 animate-fade-in">
-            <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 neon-glow-text animate-fly-in golden-border">
-              LUCKY DRAW
-            </h1>
-            <div className="space-y-4">
-              <p className="text-xl md:text-2xl text-cyan-300 font-light tracking-wide">
-                Spin for amazing prizes
-              </p>
-              <div className="flex justify-center gap-8 text-sm text-purple-300">
+          <div className="relative w-full max-w-6xl mx-auto">
+            {/* Floating Orbs */}
+            <div className="floating-orb orb-cyan w-20 h-20 top-10 left-10" style={{ animationDelay: '0s' }}></div>
+            <div className="floating-orb orb-pink w-16 h-16 top-20 right-20" style={{ animationDelay: '1s' }}></div>
+            <div className="floating-orb orb-purple w-24 h-24 bottom-32 left-16" style={{ animationDelay: '2s' }}></div>
+            <div className="floating-orb orb-gold w-18 h-18 bottom-20 right-32" style={{ animationDelay: '3s' }}></div>
+            <div className="floating-orb orb-cyan w-14 h-14 top-1/3 right-1/4" style={{ animationDelay: '4s' }}></div>
+            <div className="floating-orb orb-pink w-22 h-22 bottom-1/3 left-1/3" style={{ animationDelay: '5s' }}></div>
+
+            {/* Energy Rings */}
+            <div className="energy-ring ring-1 w-96 h-96 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="energy-ring ring-2 w-80 h-80 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="energy-ring ring-3 w-64 h-64 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+
+            {/* Main Game Card */}
+            <div className="game-card rounded-3xl p-12 text-center space-y-10 animate-fade-in">
+              {/* Game Title */}
+              <div className="game-title-container">
+                <div className="game-title-bg"></div>
+                <h1 className="text-6xl md:text-8xl font-black holographic-text mega-neon-glow animate-fly-in relative z-10">
+                  LUCKY DRAW
+                </h1>
+              </div>
+
+              {/* Subtitle */}
+              <div className="space-y-6">
+                <p className="text-2xl md:text-3xl font-bold subtitle-glow tracking-wide">
+                  🎰 Spin for Amazing Prizes 🎰
+                </p>
+                <p className="text-lg text-purple-300 font-medium opacity-90">
+                  Enter the ultimate gaming experience and win incredible rewards!
+                </p>
+              </div>
+
+              {/* Game Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div className="stat-card rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Users className="w-8 h-8 text-cyan-400" />
+                    <span className="text-3xl font-bold text-cyan-400">{participantCount}</span>
+                  </div>
+                  <div className="text-lg font-semibold text-white">Players Ready</div>
+                  <div className="text-sm text-cyan-300 mt-1">Active Participants</div>
+                </div>
+                
+                <div className="stat-card rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Gift className="w-8 h-8 text-pink-400" />
+                    <span className="text-3xl font-bold text-pink-400">{prizes.length}</span>
+                  </div>
+                  <div className="text-lg font-semibold text-white">Epic Prizes</div>
+                  <div className="text-sm text-pink-300 mt-1">Waiting to be Won</div>
+                </div>
+                
+                <div className="stat-card rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Trophy className="w-8 h-8 text-yellow-400" />
+                    <span className="text-3xl font-bold text-yellow-400">{numWinners}</span>
+                  </div>
+                  <div className="text-lg font-semibold text-white">Lucky Winners</div>
+                  <div className="text-sm text-yellow-300 mt-1">Will be Selected</div>
+                </div>
+              </div>
+
+              {/* Call to Action */}
+              <div className="space-y-6">
+                <div className="text-center">
+                  <div className="text-lg text-purple-300 mb-4 font-medium">
+                    🎯 Ready to test your luck? 🎯
+                  </div>
+                  <button
+                    onClick={startGame}
+                    disabled={participants.length === 0}
+                    className="mega-start-button px-16 py-6 text-2xl font-black text-white rounded-2xl transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+                  >
+                    🚀 START THE DRAW 🚀
+                  </button>
+                </div>
+                
+                {participants.length === 0 && (
+                  <div className="text-red-400 text-sm font-medium bg-red-900/20 rounded-lg p-3 border border-red-500/30">
+                    ⚠️ No participants available. Please check your connection and try again.
+                  </div>
+                )}
+              </div>
+
+              {/* Game Features */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-purple-300 max-w-2xl mx-auto">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  <span>{participantCount} Participants</span>
+                  <Zap className="w-4 h-4 text-yellow-400" />
+                  <span>Real-time spinning animation</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Gift className="w-5 h-5" />
-                  <span>{prizes.length} Prizes</span>
+                  <Star className="w-4 h-4 text-cyan-400" />
+                  <span>Fair & transparent selection</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Trophy className="w-5 h-5" />
-                  <span>{numWinners} Winners</span>
+                  <Crown className="w-4 h-4 text-pink-400" />
+                  <span>Multiple prize tiers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gem className="w-4 h-4 text-purple-400" />
+                  <span>Instant winner announcement</span>
                 </div>
               </div>
             </div>
-            <button
-              onClick={startGame}
-              disabled={participants.length === 0}
-              className="start-button px-12 py-4 text-xl font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg border-2 border-cyan-400 hover:border-pink-400 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              SPIN NOW
-            </button>
           </div>
         )}
 
