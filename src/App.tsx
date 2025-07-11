@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Zap, Star, Crown, Gift, Gem, Coins, Award, Users, AlertCircle, RefreshCw } from 'lucide-react';
 import { useLuckyDraw } from './hooks/useLuckyDraw';
+import { useAudio } from './hooks/useAudio';
 import { ParticipantDisplay } from './components/ParticipantDisplay';
 import { PrizeDisplay } from './components/PrizeDisplay';
 import { WinCelebration } from './components/WinCelebration';
+import { AudioControls } from './components/AudioControls';
 import { submitWinners } from './services/api';
 import { GameState, Participant, Prize } from './types';
 
@@ -21,6 +23,17 @@ function App() {
     numWinners
   } = useLuckyDraw();
 
+  const {
+    isAudioEnabled,
+    currentTrack,
+    enableAudio,
+    playBackgroundMusic,
+    playTickerSound,
+    playWinningSound,
+    stopAllAudio,
+    toggleMute
+  } = useAudio();
+
   const [gameState, setGameState] = useState<GameState>('start');
   const [currentParticipantIndex, setCurrentParticipantIndex] = useState(0);
   const [currentPrizeIndex, setCurrentPrizeIndex] = useState(0);
@@ -30,6 +43,13 @@ function App() {
   const [winnersSubmitted, setWinnersSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
+
+  // Start background music when component mounts
+  useEffect(() => {
+    if (gameState === 'start' && isAudioEnabled) {
+      playBackgroundMusic();
+    }
+  }, [gameState, isAudioEnabled]);
 
   // Show loading state while API data is being fetched
   if (apiLoading) {
@@ -89,7 +109,13 @@ function App() {
       alert('No prizes available! The game will continue with default prizes.');
     }
 
+    // Enable audio if not already enabled
+    if (!isAudioEnabled) {
+      enableAudio();
+    }
+
     setGameState('ticker');
+    playTickerSound(); // Start ticker sound
     setTickerSpeed(80);
     
     // Fast ticker animation that gradually slows down
@@ -122,6 +148,7 @@ function App() {
             
             // Show celebration effects and go directly to results
             setShowCelebration(true);
+            playWinningSound(); // Play winning sound
             setGameState('leaderboard');
             
             // Submit winners data to API
@@ -181,6 +208,12 @@ function App() {
     setSubmissionError(null);
     setShowCelebration(false);
     setShowCelebration(false);
+    
+    // Reset audio to background music
+    stopAllAudio();
+    if (isAudioEnabled) {
+      setTimeout(() => playBackgroundMusic(), 500);
+    }
   };
 
   const getRankIcon = (rank: number) => {
@@ -642,6 +675,14 @@ function App() {
         winnerName={selectedParticipant?.name || ''}
         prizeName={wonPrize?.name || ''}
         onComplete={() => setShowCelebration(false)}
+      />
+      
+      {/* Audio Controls */}
+      <AudioControls
+        isAudioEnabled={isAudioEnabled}
+        currentTrack={currentTrack}
+        onToggleMute={toggleMute}
+        onEnableAudio={enableAudio}
       />
     </div>
   );
