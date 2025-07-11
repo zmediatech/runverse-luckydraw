@@ -398,27 +398,38 @@ function App() {
                 <h2 className="text-3xl font-bold text-center text-yellow-400 mb-8 neon-glow-text">
                   🏆 TOP WINNERS 🏆
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row items-end justify-center gap-6 max-w-5xl mx-auto mb-12">
                   {winners.slice(0, 3).map((winner, index) => {
                     const position = index + 1;
-                    const podiumHeight = position === 1 ? 'h-32' : position === 2 ? 'h-24' : 'h-20';
+                    const podiumHeight = position === 1 ? 'md:h-80' : position === 2 ? 'md:h-64' : 'md:h-48';
+                    const podiumWidth = position === 1 ? 'md:w-80' : position === 2 ? 'md:w-64' : 'md:w-48';
                     const crownIcon = position === 1 ? '👑' : position === 2 ? '🥈' : '🥉';
+                    const crownSize = position === 1 ? 'text-6xl' : position === 2 ? 'text-5xl' : 'text-4xl';
                     const bgGradient = position === 1 
-                      ? 'from-yellow-400/20 to-orange-400/20 border-yellow-400' 
+                      ? 'from-yellow-400/30 to-orange-400/30 border-yellow-400 shadow-yellow-400/50' 
                       : position === 2 
-                      ? 'from-cyan-400/20 to-blue-400/20 border-cyan-400'
-                      : 'from-pink-400/20 to-purple-400/20 border-pink-400';
+                      ? 'from-gray-300/30 to-gray-400/30 border-gray-300 shadow-gray-300/50'
+                      : 'from-amber-600/30 to-amber-700/30 border-amber-600 shadow-amber-600/50';
+                    const textColor = position === 1 ? 'text-yellow-400' : position === 2 ? 'text-gray-300' : 'text-amber-600';
+                    const order = position === 1 ? 'md:order-2' : position === 2 ? 'md:order-1' : 'md:order-3';
                     
                     return (
                       <div
                         key={winner.id}
-                        className={`podium-card bg-gradient-to-br ${bgGradient} rounded-xl p-6 text-center animate-slide-in`}
+                        className={`${order} podium-card bg-gradient-to-br ${bgGradient} ${podiumHeight} ${podiumWidth} rounded-xl p-6 text-center animate-slide-in shadow-2xl border-4 relative overflow-hidden`}
                         style={{ animationDelay: `${index * 0.2}s` }}
                       >
-                        <div className="text-4xl mb-3">{crownIcon}</div>
-                        <div className="text-2xl font-bold text-white mb-2">#{position}</div>
+                        {/* Podium Base */}
+                        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/50 to-transparent"></div>
                         
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current mx-auto mb-4">
+                        {/* Crown/Medal */}
+                        <div className={`${crownSize} mb-4 animate-bounce`}>{crownIcon}</div>
+                        
+                        {/* Position Badge */}
+                        <div className={`text-3xl font-black ${textColor} mb-4 neon-glow-text`}>#{position}</div>
+                        
+                        {/* Winner Avatar */}
+                        <div className={`${position === 1 ? 'w-24 h-24' : position === 2 ? 'w-20 h-20' : 'w-16 h-16'} rounded-full overflow-hidden border-4 border-current mx-auto mb-4 shadow-lg`}>
                           {winner.picture ? (
                             <img 
                               src={winner.picture} 
@@ -426,19 +437,26 @@ function App() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-current to-transparent flex items-center justify-center text-white font-bold text-xl">
+                            <div className={`w-full h-full bg-gradient-to-br from-current to-transparent flex items-center justify-center text-white font-bold ${position === 1 ? 'text-2xl' : 'text-xl'}`}>
                               {winner.name.charAt(0)}
                             </div>
                           )}
                         </div>
                         
-                        <div className="text-lg font-bold text-white mb-2">{winner.name}</div>
-                        <div className="text-sm opacity-75 mb-3">ID: {winner.id.slice(-8)}</div>
+                        {/* Winner Name */}
+                        <div className={`${position === 1 ? 'text-xl' : 'text-lg'} font-bold text-white mb-2 neon-glow-text`}>{winner.name}</div>
+                        <div className="text-sm opacity-75 mb-4">ID: {winner.id.slice(-8)}</div>
                         
+                        {/* Prize Information */}
                         {winner.prize && (
-                          <div className="border-t border-current/30 pt-3">
-                            <div className="text-sm font-bold text-current mb-1">Prize Won:</div>
-                            <div className="text-sm text-white">{winner.prize.name}</div>
+                          <div className="border-t border-current/30 pt-4">
+                            {/* Prize Icon */}
+                            <div className={`${textColor} mb-2 flex justify-center`}>
+                              {winner.prize.icon}
+                            </div>
+                            <div className={`text-sm font-bold ${textColor} mb-1`}>Prize Won:</div>
+                            <div className="text-sm text-white font-semibold">{winner.prize.name}</div>
+                            <div className="text-xs text-white/75 mt-1">{winner.prize.value}</div>
                           </div>
                         )}
                       </div>
@@ -454,29 +472,58 @@ function App() {
                 <h3 className="text-2xl font-bold text-center text-cyan-400 mb-6">
                   🎁 Other Prize Winners
                 </h3>
-                <div className="bg-black/20 rounded-xl border border-cyan-400/20 overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-cyan-900/30 border-b border-cyan-400/30">
-                        <tr>
-                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Rank</th>
-                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Winner</th>
-                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Prize</th>
-                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">ID</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {winners.slice(3).map((winner, index) => (
-                          <tr key={winner.id} className="border-b border-cyan-400/10 hover:bg-cyan-900/20">
-                            <td className="px-6 py-4">#{index + 4}</td>
-                            <td className="px-6 py-4">{winner.name}</td>
-                            <td className="px-6 py-4">{winner.prize?.name || 'N/A'}</td>
-                            <td className="px-6 py-4">{winner.id.slice(-8)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                  {winners.slice(3).map((winner, index) => (
+                    <div
+                      key={winner.id}
+                      className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 border-2 border-purple-400/50 rounded-xl p-6 backdrop-blur-sm hover:border-cyan-400/70 transition-all duration-300 hover:transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                    >
+                      {/* Rank Badge */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="bg-purple-600/80 text-white px-3 py-1 rounded-full text-sm font-bold">
+                          #{index + 4}
+                        </div>
+                        <div className="text-purple-400">
+                          <Award className="w-5 h-5" />
+                        </div>
+                      </div>
+                      
+                      {/* Winner Info */}
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-purple-400 shadow-lg">
+                          {winner.picture ? (
+                            <img 
+                              src={winner.picture} 
+                              alt={winner.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-purple-400 to-cyan-400 flex items-center justify-center text-white font-bold text-lg">
+                              {winner.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-lg font-bold text-white mb-1">{winner.name}</div>
+                          <div className="text-sm text-purple-300">ID: {winner.id.slice(-8)}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Prize Info */}
+                      {winner.prize && (
+                        <div className="border-t border-purple-400/30 pt-4">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="text-purple-400">
+                              {winner.prize.icon}
+                            </div>
+                            <div className="text-sm font-bold text-purple-400">Prize Won:</div>
+                          </div>
+                          <div className="text-white font-semibold mb-1">{winner.prize.name}</div>
+                          <div className="text-sm text-purple-300">{winner.prize.value}</div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
