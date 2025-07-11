@@ -373,20 +373,20 @@ function App() {
               </p>
 
               {/* Stats Grid */}
-              <div className="stats-grid">
-                <div className="stat-item animate-flip-flop">
+              <div className="stats-grid animate-flip-flop-twice">
+                <div className="stat-item">
                   <span className="stat-icon">👥</span>
                   <div className="stat-number">{participantCount}</div>
                   <div className="stat-label">Players Ready</div>
                 </div>
                 
-                <div className="stat-item animate-flip-flop" style={{ animationDelay: '0.5s' }}>
+                <div className="stat-item">
                   <span className="stat-icon">🎁</span>
                   <div className="stat-number">{prizes.length}</div>
                   <div className="stat-label">Amazing Prizes</div>
                 </div>
                 
-                <div className="stat-item animate-flip-flop" style={{ animationDelay: '1s' }}>
+                <div className="stat-item">
                   <span className="stat-icon">🏆</span>
                   <div className="stat-number">{numWinners}</div>
                   <div className="stat-label">Lucky Winners</div>
