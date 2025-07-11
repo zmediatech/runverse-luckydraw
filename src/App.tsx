@@ -26,6 +26,7 @@ function App() {
   const {
     isAudioEnabled,
     currentTrack,
+    isLoading: audioLoading,
     enableAudio,
     playBackgroundMusic,
     playTickerSound,
@@ -681,6 +682,7 @@ function App() {
       <AudioControls
         isAudioEnabled={isAudioEnabled}
         currentTrack={currentTrack}
+        isLoading={audioLoading}
         onToggleMute={toggleMute}
         onEnableAudio={enableAudio}
       />
