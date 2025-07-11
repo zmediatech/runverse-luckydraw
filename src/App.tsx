@@ -423,10 +423,6 @@ function App() {
                   <span className="feature-icon">💎</span>
                   <div className="feature-text">Multiple prize tiers</div>
                 </div>
-                <div className="feature-item">
-                  <span className="feature-icon">🎉</span>
-                  <div className="feature-text">Instant results</div>
-                </div>
               </div>
             </div>
           </div>
