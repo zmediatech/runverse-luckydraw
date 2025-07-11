@@ -392,16 +392,94 @@ function App() {
               </div>
             </div>
 
+            {/* Top 3 Winners Podium */}
+            {winners.length > 0 && (
+              <div className="section-spacing">
+                <h2 className="text-3xl font-bold text-center text-yellow-400 mb-8 neon-glow-text">
+                  🏆 TOP WINNERS 🏆
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                  {winners.slice(0, 3).map((winner, index) => {
+                    const position = index + 1;
+                    const podiumHeight = position === 1 ? 'h-32' : position === 2 ? 'h-24' : 'h-20';
+                    const crownIcon = position === 1 ? '👑' : position === 2 ? '🥈' : '🥉';
+                    const bgGradient = position === 1 
+                      ? 'from-yellow-400/20 to-orange-400/20 border-yellow-400' 
+                      : position === 2 
+                      ? 'from-cyan-400/20 to-blue-400/20 border-cyan-400'
+                      : 'from-pink-400/20 to-purple-400/20 border-pink-400';
+                    
+                    return (
+                      <div
+                        key={winner.id}
+                        className={`podium-card bg-gradient-to-br ${bgGradient} rounded-xl p-6 text-center animate-slide-in`}
+                        style={{ animationDelay: `${index * 0.2}s` }}
+                      >
+                        <div className="text-4xl mb-3">{crownIcon}</div>
+                        <div className="text-2xl font-bold text-white mb-2">#{position}</div>
+                        
+                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current mx-auto mb-4">
+                          {winner.picture ? (
+                            <img 
+                              src={winner.picture} 
+                              alt={winner.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-current to-transparent flex items-center justify-center text-white font-bold text-xl">
+                              {winner.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="text-lg font-bold text-white mb-2">{winner.name}</div>
+                        <div className="text-sm opacity-75 mb-3">ID: {winner.id.slice(-8)}</div>
+                        
+                        {winner.prize && (
+                          <div className="border-t border-current/30 pt-3">
+                            <div className="text-sm font-bold text-current mb-1">Prize Won:</div>
+                            <div className="text-sm text-white">{winner.prize.name}</div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Remaining Winners Table */}
+            {winners.length > 3 && (
+              <div className="section-spacing">
+                <h3 className="text-2xl font-bold text-center text-cyan-400 mb-6">
+                  🎁 Other Prize Winners
+                </h3>
+                <div className="bg-black/20 rounded-xl border border-cyan-400/20 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-cyan-900/30 border-b border-cyan-400/30">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Rank</th>
+                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Winner</th>
+                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">Prize</th>
+                          <th className="px-6 py-4 text-left text-cyan-400 font-bold">ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                            <td className="px-6 py-4">
+            )}
             {/* All Participants */}
             <div className="section-spacing">
-              <h3 className="text-xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
+              <h3 className="text-2xl font-bold text-center text-purple-400 mb-6">
+                👥 All Participants
+              </h3>
               <div className="max-h-80 overflow-y-auto bg-black/20 rounded-xl p-4 border border-cyan-400/20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {memoizedParticipants.map((participant, index) => (
                     <div
                       key={participant.id}
                       className={`p-3 rounded-lg border backdrop-blur-sm transition-colors ${
-                        participant.id === selectedParticipant?.id 
+                        winners.some(w => w.id === participant.id)
                           ? 'bg-yellow-900/50 border-yellow-400/50 text-yellow-300' 
                           : 'bg-purple-900/30 border-purple-400/30 hover:bg-purple-900/50'
                       }`}
@@ -425,7 +503,7 @@ function App() {
                           <div className="font-bold text-white text-sm truncate">{participant.name}</div>
                           <div className="text-xs opacity-75 truncate">ID: {participant.id.slice(-8)}</div>
                         </div>
-                        {participant.id === selectedParticipant?.id && (
+                        {winners.some(w => w.id === participant.id) && (
                           <div className="text-yellow-400 text-xl">👑</div>
                         )}
                       </div>
