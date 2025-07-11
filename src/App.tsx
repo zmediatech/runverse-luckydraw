@@ -368,7 +368,7 @@ function App() {
               </h1>
               
               {/* Hero Subtitle */}
-              <p className="hero-subtitle">
+              <p className="hero-subtitle animate-fly-in" style={{ animationDelay: '0.8s' }}>
                 🎯 Spin the wheel and win amazing prizes! 🎯
               </p>
 
