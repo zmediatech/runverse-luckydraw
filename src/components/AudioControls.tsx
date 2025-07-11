@@ -20,7 +20,7 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
     if (isLoading) return '⏳ Loading Audio...';
     switch (currentTrack) {
       case 'background': return '🎰 Lucky Draw Music';
-      case 'ticker': return '🎡 Ticker Spinning';
+      case 'spinning': return '🎵 Spinning Music';
       case 'winning': return '🎉 Congratulations!';
       default: return '🔇 No Audio';
     }
