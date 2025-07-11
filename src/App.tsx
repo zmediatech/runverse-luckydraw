@@ -457,6 +457,10 @@ function App() {
                             <div className={`text-sm font-bold ${textColor} mb-1`}>Prize Won:</div>
                             <div className="text-sm text-white font-semibold">{winner.prize.name}</div>
                             <div className="text-xs text-white/75 mt-1">{winner.prize.value}</div>
+                            {/* Prize Price/Value */}
+                            <div className={`text-lg font-bold ${textColor} mt-2 bg-black/30 rounded-lg px-3 py-1`}>
+                              💰 ${winner.prize.rarity === 'legendary' ? '1000' : winner.prize.rarity === 'epic' ? '500' : winner.prize.rarity === 'rare' ? '250' : '100'}
+                            </div>
                           </div>
                         )}
                       </div>
