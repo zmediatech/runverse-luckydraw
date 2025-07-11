@@ -116,7 +116,11 @@ function App() {
     }
 
     setGameState('ticker');
-    playTickerSound(); // Start spinning music
+    // Stop background music and start spinning music
+    stopAllAudio();
+    setTimeout(() => {
+      playTickerSound(); // Start spinning music after brief pause
+    }, 200);
     setTickerSpeed(80);
     
     // Fast ticker animation that gradually slows down

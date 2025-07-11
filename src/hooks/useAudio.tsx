@@ -126,6 +126,7 @@ export const useAudio = () => {
       // Stop background music
       if (backgroundMusicRef.current) {
         backgroundMusicRef.current.pause();
+        backgroundMusicRef.current.currentTime = 0;
       }
       
       // Spinning music sources - upbeat music for spinning
@@ -147,9 +148,14 @@ export const useAudio = () => {
       };
 
       tickerSoundRef.current.onerror = tryNextSource;
+      tickerSoundRef.current.onloadeddata = () => {
+        console.log('Spinning music loaded successfully');
+      };
       tryNextSource();
 
       setCurrentTrack('spinning');
+      tickerSoundRef.current.currentTime = 0;
+      tickerSoundRef.current.loop = true;
       await tickerSoundRef.current.play();
       console.log('Spinning music started');
     } catch (error) {
@@ -158,6 +164,8 @@ export const useAudio = () => {
       try {
         if (tickerSoundRef.current) {
           tickerSoundRef.current.src = createSpinMusic();
+          tickerSoundRef.current.currentTime = 0;
+          tickerSoundRef.current.loop = true;
           await tickerSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -309,7 +317,7 @@ const createSpinMusic = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 3; // 3 second loop for music
+    const duration = 4; // 4 second loop for music
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -320,16 +328,17 @@ const createSpinMusic = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create upbeat spinning music
-        const melody = Math.sin(2 * Math.PI * 440 * time) * 0.3; // A4
-        const harmony = Math.sin(2 * Math.PI * 554.37 * time) * 0.2; // C#5
-        const bass = Math.sin(2 * Math.PI * 220 * time) * 0.4; // A3
-        const rhythm = Math.sin(2 * Math.PI * 880 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.15; // A5 rhythm
+        // Create exciting spinning music with building tension
+        const melody = Math.sin(2 * Math.PI * 523.25 * time) * 0.4; // C5
+        const harmony = Math.sin(2 * Math.PI * 659.25 * time) * 0.3; // E5
+        const bass = Math.sin(2 * Math.PI * 261.63 * time) * 0.5; // C4
+        const rhythm = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 8 * time) * 0.2; // C6 rhythm
         
-        // Add excitement
-        const excitement = Math.sin(2 * Math.PI * 1760 * time) * Math.sin(2 * Math.PI * 2 * time) * 0.1;
+        // Add spinning excitement and tension
+        const excitement = Math.sin(2 * Math.PI * 1760 * time) * Math.sin(2 * Math.PI * 4 * time) * 0.15;
+        const tension = Math.sin(2 * Math.PI * 880 * time) * Math.sin(2 * Math.PI * 6 * time) * 0.1;
         
-        channelData[i] = (melody + harmony + bass + rhythm + excitement) * 0.7;
+        channelData[i] = (melody + harmony + bass + rhythm + excitement + tension) * 0.8;
       }
     }
     
