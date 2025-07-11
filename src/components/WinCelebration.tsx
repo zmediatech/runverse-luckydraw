@@ -92,21 +92,6 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
       <div className="fireworks">
         {fireworks}
       </div>
-      
-      {/* Winner Announcement */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-[1002] pointer-events-none">
-        <div className="bg-black/80 backdrop-blur-lg rounded-2xl p-8 border-4 border-gold-400 shadow-2xl">
-          <div className="text-3xl font-bold text-gold-400 mb-4 animate-pulse">
-            🏆 WINNER 🏆
-          </div>
-          <div className="text-2xl font-bold text-white mb-2">
-            {winnerName}
-          </div>
-          <div className="text-lg text-cyan-400">
-            Won: {prizeName}
-          </div>
-        </div>
-      </div>
     </>
   );
 };

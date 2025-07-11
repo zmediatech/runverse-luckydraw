@@ -124,14 +124,15 @@ function App() {
             // Show celebration effects
             setTimeout(() => {
               setShowCelebration(true);
-            }, 1000);
+            }, 500);
             
             // Show leaderboard after loading
             setTimeout(() => {
+              setShowCelebration(false);
               setGameState('leaderboard');
               // Submit winners data to API
               submitWinnersData();
-            }, 2500);
+            }, 3000);
           }, 500);
         }
         return newSpeed;
