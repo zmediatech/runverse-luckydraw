@@ -519,6 +519,69 @@ body {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
+/* Fly-in animation for h1 */
+@keyframes fly-in {
+  0% {
+    transform: translateY(-100vh) scale(0.5) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(20px) scale(1.1) rotate(2deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-fly-in {
+  animation: fly-in 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Golden border effect */
+.golden-border {
+  position: relative;
+  padding: 1rem 2rem;
+  border: 3px solid transparent;
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b) border-box;
+  -webkit-background-clip: padding-box, border-box;
+  background-clip: padding-box, border-box;
+  border-radius: 20px;
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.6),
+    0 0 60px rgba(255, 215, 0, 0.4),
+    inset 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+.golden-border::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b, #ffd700);
+  border-radius: 20px;
+  z-index: -1;
+  animation: golden-border-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes golden-border-glow {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.8),
+      0 0 40px rgba(255, 215, 0, 0.6),
+      0 0 60px rgba(255, 215, 0, 0.4);
+  }
+  100% {
+    box-shadow: 
+      0 0 40px rgba(255, 215, 0, 1),
+      0 0 80px rgba(255, 215, 0, 0.8),
+      0 0 120px rgba(255, 215, 0, 0.6);
+  }
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .top-player-card {

@@ -217,7 +217,7 @@ function App() {
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         {gameState === 'start' && (
           <div className="text-center space-y-8 animate-fade-in">
-            <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 neon-glow-text animate-pulse-glow">
+            <h1 className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 neon-glow-text animate-fly-in golden-border">
               LUCKY DRAW
             </h1>
             <div className="space-y-4">
