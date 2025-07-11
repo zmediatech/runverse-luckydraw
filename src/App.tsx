@@ -214,6 +214,102 @@ function App() {
         ))}
       </div>
 
+      {/* Confetti effects */}
+      <div className="confetti">
+        {[...Array(30)].map((_, i) => {
+          const types = ['confetti-square', 'confetti-circle', 'confetti-triangle', 'confetti-star'];
+          const type = types[i % types.length];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 8;
+          const duration = 8 + Math.random() * 4;
+          
+          return (
+            <div
+              key={`confetti-${i}`}
+              className={`confetti-piece ${type}`}
+              style={{
+                left: `${left}%`,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* Lucky draw themed background elements */}
+      <div className="lucky-draw-bg">
+        {[...Array(15)].map((_, i) => {
+          const icons = ['🎰', '🎲', '🎯', '🎪', '🎊', '🎉', '💎', '👑', '🏆', '⭐', '💰', '🎁', '🍀', '🔥', '⚡'];
+          const icon = icons[i % icons.length];
+          const sizes = ['small', '', 'large'];
+          const size = sizes[i % sizes.length];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 15;
+          const duration = 15 + Math.random() * 10;
+          
+          return (
+            <div
+              key={`icon-${i}`}
+              className={`floating-icon ${size}`}
+              style={{
+                left: `${left}%`,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`
+              }}
+            >
+              {icon}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Sparkle effects */}
+      <div className="sparkles">
+        {[...Array(25)].map((_, i) => {
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const delay = Math.random() * 3;
+          
+          return (
+            <div
+              key={`sparkle-${i}`}
+              className="sparkle"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+                animationDelay: `${delay}s`
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* Prize symbols floating */}
+      <div className="prize-symbols">
+        {[...Array(12)].map((_, i) => {
+          const symbols = ['💰', '🏆', '👑', '💎', '⭐', '🎁', '🎯', '🍀', '🔥', '⚡', '💫', '✨'];
+          const symbol = symbols[i % symbols.length];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 12;
+          const duration = 12 + Math.random() * 6;
+          
+          return (
+            <div
+              key={`prize-${i}`}
+              className="prize-symbol"
+              style={{
+                left: `${left}%`,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`
+              }}
+            >
+              {symbol}
+            </div>
+          );
+        })}
+      </div>
+
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         {gameState === 'start' && (
           <div className="text-center space-y-8 animate-fade-in">

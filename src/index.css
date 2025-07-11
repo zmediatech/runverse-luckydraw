@@ -55,6 +55,159 @@ body {
   box-shadow: 0 0 10px #00ffff;
 }
 
+/* Confetti effects */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  animation: confetti-fall 8s infinite linear;
+}
+
+.confetti-square {
+  background: #ffd700;
+  box-shadow: 0 0 6px #ffd700;
+}
+
+.confetti-circle {
+  border-radius: 50%;
+  background: #ff1493;
+  box-shadow: 0 0 6px #ff1493;
+}
+
+.confetti-triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid #00ffff;
+  filter: drop-shadow(0 0 6px #00ffff);
+}
+
+.confetti-star {
+  background: #9333ea;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  box-shadow: 0 0 6px #9333ea;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Lucky draw themed background elements */
+.lucky-draw-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-icon {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.1);
+  animation: float-rotate 15s infinite linear;
+  font-size: 2rem;
+}
+
+.floating-icon.large {
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.08);
+}
+
+.floating-icon.small {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes float-rotate {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Sparkle effects */
+.sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ffd700;
+  border-radius: 50%;
+  animation: sparkle-twinkle 3s infinite ease-in-out;
+  box-shadow: 0 0 10px #ffd700;
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Prize symbols floating */
+.prize-symbols {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.prize-symbol {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: prize-float 12s infinite linear;
+  opacity: 0.15;
+}
+
+@keyframes prize-float {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
 @keyframes float {
   0% {
     transform: translateY(100vh) rotate(0deg);
