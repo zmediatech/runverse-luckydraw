@@ -487,132 +487,136 @@ function App() {
               </div>
             </div>
 
-            {/* Top 3 Winners Podium */}
+            {/* Prize Winners Section */}
             {winners.length > 0 && (
               <div className="section-spacing">
-                <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text">
+                <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text mb-8">
                   🏆 PRIZE WINNERS 🏆
                 </h2>
                 
-                {/* Top 3 Podium */}
-                <div className="flex justify-center items-end gap-6 mb-12">
-                  {winners.slice(0, 3).map((winner, index) => {
-                    const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd for visual arrangement
-                    const actualIndex = podiumOrder[index];
-                    const actualWinner = winners[actualIndex];
-                    if (!actualWinner) return null;
-                    
-                    const heights = ['h-32', 'h-40', 'h-28'];
-                    
-                    return (
-                      <div
-                        key={actualWinner.id}
-                        className={`podium-card ${getRankGlow(actualWinner.position || 1)} p-6 rounded-xl ${heights[index]} flex flex-col justify-between items-center animate-slide-in backdrop-blur-sm min-w-[160px]`}
-                        style={{ animationDelay: `${index * 0.2}s` }}
-                      >
-                        <div className="text-center">
-                          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current mb-4 mx-auto">
-                            {actualWinner.picture ? (
+                {/* Top 3 Winners Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+                  {winners.slice(0, 3).map((winner, index) => (
+                    <div
+                      key={winner.id}
+                      className={`${getRankGlow(winner.position || 1)} p-6 rounded-xl backdrop-blur-sm border-2 animate-slide-in`}
+                      style={{ animationDelay: `${index * 0.2}s` }}
+                    >
+                      {/* Position Badge */}
+                      <div className="flex items-center justify-center mb-4">
+                        <div className="flex items-center gap-2 text-2xl font-bold">
+                          {getRankIcon(winner.position || 1)}
+                          <span>#{winner.position}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Winner Avatar */}
+                      <div className="flex justify-center mb-4">
+                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current">
+                          {winner.picture ? (
+                            <img 
+                              src={winner.picture} 
+                              alt={winner.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-xl">
+                              {winner.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Winner Name */}
+                      <div className="text-center mb-4">
+                        <div className="font-bold text-white text-lg mb-1">{winner.name}</div>
+                        <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
+                      </div>
+                      
+                      {/* Prize */}
+                      {winner.prize && (
+                        <div className="text-center border-t border-current/20 pt-4">
+                          <div className="flex justify-center mb-3">
+                            {winner.prize.picture ? (
+                              <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
+                                <img 
+                                  src={winner.prize.picture} 
+                                  alt={winner.prize.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className={`${winner.prize.color}`}>
+                                {winner.prize.icon}
+                              </div>
+                            )}
+                          </div>
+                          <div className="font-bold text-white text-base">{winner.prize.name}</div>
+                          <div className="text-sm text-yellow-300 mt-1">{winner.prize.value}</div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* All Winners List */}
+                {winners.length > 3 && (
+                  <div className="mt-12">
+                    <h3 className="text-xl font-bold text-center text-purple-400 mb-6">Other Prize Winners</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                      {winners.slice(3).map((winner, index) => (
+                        <div
+                          key={winner.id}
+                          className={`${getRankGlow(winner.position || 1)} p-4 rounded-lg backdrop-blur-sm border animate-slide-in flex items-center gap-4`}
+                          style={{ animationDelay: `${(index + 3) * 0.1}s` }}
+                        >
+                          <div className="flex items-center gap-2 min-w-[60px]">
+                            <span className="text-lg font-bold">#{winner.position}</span>
+                            {getRankIcon(winner.position || 1)}
+                          </div>
+                          
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-current flex-shrink-0">
+                            {winner.picture ? (
                               <img 
-                                src={actualWinner.picture} 
-                                alt={actualWinner.name}
+                                src={winner.picture} 
+                                alt={winner.name}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-lg">
-                                {actualWinner.name.charAt(0)}
+                              <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-sm">
+                                {winner.name.charAt(0)}
                               </div>
                             )}
                           </div>
-                          <div className="font-bold text-white text-base mb-2 truncate max-w-[140px]">{actualWinner.name}</div>
-                          <div className="text-sm opacity-75 mb-3">Position {actualWinner.position}</div>
-                        </div>
-                        
-                        {actualWinner.prize && (
-                          <div className="text-center mt-2">
-                            {actualWinner.prize.picture ? (
-                              <div className="w-14 h-14 rounded-lg overflow-hidden border-2 border-current mx-auto mb-3">
-                                <img 
-                                  src={actualWinner.prize.picture} 
-                                  alt={actualWinner.prize.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className={`${actualWinner.prize.color} mb-3 flex justify-center`}>
-                                {actualWinner.prize.icon}
-                              </div>
-                            )}
-                            <div className="text-sm font-bold text-white truncate max-w-[140px]">{actualWinner.prize.name}</div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-white text-base truncate">{winner.name}</div>
+                            <div className="text-xs opacity-75 truncate">ID: {winner.id.slice(-8)}</div>
                           </div>
-                        )}
-                        
-                        <div className="text-3xl mt-3">
-                          {getRankIcon(actualWinner.position || 1)}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* All Winners Table */}
-                {winners.length > 0 && (
-                  <div className="section-spacing">
-                    <h3 className="text-2xl font-bold text-center text-purple-400 mb-12 mt-16">All Prize Winners</h3>
-                    <div className="leaderboard-container max-h-[500px] overflow-y-auto">
-                        {winners.map((winner, index) => (
-                          <div
-                            key={winner.id}
-                            className={`leaderboard-row ${getRankGlow(winner.position || 1)} flex items-center gap-8 animate-slide-in-left`}
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                          >
-                            <div className="flex items-center gap-4 min-w-[100px]">
-                              <span className="text-3xl font-bold"># {winner.position}</span>
-                              {getRankIcon(winner.position || 1)}
-                            </div>
-                            
-                            <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-current flex-shrink-0 ml-2">
-                              {winner.picture ? (
-                                <img 
-                                  src={winner.picture} 
-                                  alt={winner.name}
-                                  className="w-full h-full object-cover"
-                                />
+                          
+                          {winner.prize && (
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              {winner.prize.picture ? (
+                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-current">
+                                  <img 
+                                    src={winner.prize.picture} 
+                                    alt={winner.prize.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
                               ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold">
-                                  {winner.name.charAt(0)}
+                                <div className={`${winner.prize.color} text-sm`}>
+                                  {winner.prize.icon}
                                 </div>
                               )}
-                            </div>
-                            
-                            <div className="flex-1 ml-4">
-                              <div className="font-bold text-white text-xl mb-1">{winner.name}</div>
-                              <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
-                            </div>
-                            
-                            {winner.prize && (
-                              <div className="flex items-center gap-6 min-w-[280px] flex-shrink-0 ml-6">
-                                {winner.prize.picture ? (
-                                  <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
-                                    <img 
-                                      src={winner.prize.picture} 
-                                      alt={winner.prize.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                ) : (
-                                  <div className={`${winner.prize.color}`}>
-                                    {winner.prize.icon}
-                                  </div>
-                                )}
-                                <div className="ml-2">
-                                  <div className="font-bold text-white text-lg">{winner.prize.name}</div>
-                                  <div className="text-base text-yellow-300 mt-1">{winner.prize.value}</div>
-                                </div>
+                              <div className="text-right">
+                                <div className="font-bold text-white text-sm">{winner.prize.name}</div>
+                                <div className="text-xs text-yellow-300">{winner.prize.value}</div>
                               </div>
-                            )}
-                          </div>
-                        ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -622,17 +626,17 @@ function App() {
             {/* Remaining Participants */}
             {remainingParticipants.length > 0 && (
               <div className="section-spacing">
-                <h3 className="text-2xl font-bold text-center text-cyan-400 mb-8">All Participants</h3>
-                <div className="leaderboard-container max-h-80 overflow-y-auto">
+                <h3 className="text-xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
+                <div className="max-h-80 overflow-y-auto bg-black/20 rounded-xl p-4 border border-cyan-400/20">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {remainingParticipants.map((participant, index) => (
                       <div
                         key={participant.id}
-                        className="participant-card animate-slide-in"
+                        className="bg-purple-900/30 p-3 rounded-lg border border-purple-400/30 backdrop-blur-sm animate-slide-in hover:bg-purple-900/50 transition-colors"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <div className="flex items-center gap-5">
-                          <span className="text-base font-bold text-purple-300 min-w-[50px]"># {participant.position}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-purple-300 min-w-[40px]">#{participant.position}</span>
                           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-400/50 flex-shrink-0">
                             {participant.picture ? (
                               <img 
@@ -646,9 +650,9 @@ function App() {
                               </div>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0 ml-2">
-                            <div className="font-bold text-white text-base truncate">{participant.name}</div>
-                            <div className="text-sm text-gray-400 truncate mt-1">ID: {participant.id.slice(-8)}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-bold text-white text-sm truncate">{participant.name}</div>
+                            <div className="text-xs text-gray-400 truncate">ID: {participant.id.slice(-8)}</div>
                           </div>
                         </div>
                       </div>
@@ -658,12 +662,12 @@ function App() {
               </div>
             )}
 
-            <div className="text-center pt-12">
+            <div className="text-center pt-8">
               <button
                 onClick={resetGame}
-                className="px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105"
+                className="px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-pink-600 to-purple-600 rounded-xl border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-pink-500/25"
               >
-                SPIN AGAIN
+                🎲 SPIN AGAIN
               </button>
             </div>
           </div>
