@@ -3,6 +3,7 @@ import { Trophy, Zap, Star, Crown, Gift, Gem, Coins, Award, Users, AlertCircle, 
 import { useLuckyDraw } from './hooks/useLuckyDraw';
 import { ParticipantDisplay } from './components/ParticipantDisplay';
 import { PrizeDisplay } from './components/PrizeDisplay';
+import { submitWinners } from './services/api';
 import { GameState, Participant, Prize } from './types';
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
   const [tickerSpeed, setTickerSpeed] = useState(80);
   const [wonPrize, setWonPrize] = useState<Prize | null>(null);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
+  const [winnersSubmitted, setWinnersSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   // Show loading state while API data is being fetched
   if (apiLoading) {
@@ -119,6 +122,8 @@ function App() {
             // Show leaderboard after loading
             setTimeout(() => {
               setGameState('leaderboard');
+              // Submit winners data to API
+              submitWinnersData();
             }, 2500);
           }, 500);
         }
@@ -134,6 +139,31 @@ function App() {
     }, 4000);
   };
 
+  const submitWinnersData = async () => {
+    if (!luckyDrawData || winners.length === 0 || winnersSubmitted) {
+      return;
+    }
+
+    try {
+      setSubmissionError(null);
+      
+      // Format winners data for API
+      const winnersData = winners.map(winner => ({
+        uid: winner.id,
+        reward: winner.prize?.name || 'Unknown Prize',
+        position: winner.position?.toString() || '0'
+      }));
+
+      await submitWinners(luckyDrawData.eventId, winnersData);
+      setWinnersSubmitted(true);
+      console.log('Winners data submitted successfully to backend');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit winners data';
+      setSubmissionError(errorMessage);
+      console.error('Failed to submit winners data:', errorMessage);
+    }
+  };
+
   const resetGame = () => {
     setGameState('start');
     setCurrentParticipantIndex(0);
@@ -141,6 +171,8 @@ function App() {
     setTickerSpeed(80);
     setWonPrize(null);
     setSelectedParticipant(null);
+    setWinnersSubmitted(false);
+    setSubmissionError(null);
   };
 
   const getRankIcon = (rank: number) => {
@@ -323,6 +355,18 @@ function App() {
                   <Trophy className="w-5 h-5" />
                   <span>{winners.length} Prize Winners</span>
                 </div>
+                {winnersSubmitted && (
+                  <div className="flex items-center gap-2 text-green-400">
+                    <Award className="w-5 h-5" />
+                    <span>Results Submitted</span>
+                  </div>
+                )}
+                {submissionError && (
+                  <div className="flex items-center gap-2 text-red-400">
+                    <AlertCircle className="w-5 h-5" />
+                    <span>Submission Failed</span>
+                  </div>
+                )}
               </div>
             </div>
 
