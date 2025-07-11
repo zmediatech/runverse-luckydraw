@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Trophy, Zap, Star, Crown, Gift, Gem, Coins, Award, Users, AlertCircle, RefreshCw } from 'lucide-react';
 import { useLuckyDraw } from './hooks/useLuckyDraw';
 import { useAudio } from './hooks/useAudio';
@@ -46,20 +46,156 @@ function App() {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
 
+  // Memoize expensive calculations
+  const memoizedParticipants = useMemo(() => participants, [participants]);
+  const memoizedPrizes = useMemo(() => prizes, [prizes]);
+
+  // Optimized game start function
+  const startGame = useCallback(() => {
+    if (memoizedParticipants.length === 0) {
+      alert('No participants available! Please check your connection and try again.');
+      return;
+    }
+    
+    if (memoizedPrizes.length === 0) {
+      alert('No prizes available! The game will continue with default prizes.');
+    }
+
+    setGameState('ticker');
+    
+    // Play ticker sound for spinning screen
+    playTickerSound();
+    
+    setTickerSpeed(80);
+    
+    let participantInterval: NodeJS.Timeout;
+    let prizeInterval: NodeJS.Timeout;
+    let slowDownInterval: NodeJS.Timeout;
+    
+    // Fast ticker animation that gradually slows down
+    participantInterval = setInterval(() => {
+      setCurrentParticipantIndex((prev) => (prev + 1) % memoizedParticipants.length);
+    }, tickerSpeed);
+
+    prizeInterval = setInterval(() => {
+      setCurrentPrizeIndex((prev) => (prev + 1) % memoizedPrizes.length);
+    }, tickerSpeed);
+
+    // Gradually slow down the ticker
+    slowDownInterval = setInterval(() => {
+      setTickerSpeed(prev => {
+        const newSpeed = prev + 15; // Faster slowdown for better UX
+        if (newSpeed >= 250) { // Reduced max speed for quicker resolution
+          clearInterval(slowDownInterval);
+          clearInterval(participantInterval);
+          clearInterval(prizeInterval);
+          
+          // Final reveal of the winner
+          setTimeout(() => {
+            const finalParticipantIndex = Math.floor(Math.random() * memoizedParticipants.length);
+            const finalPrizeIndex = Math.floor(Math.random() * memoizedPrizes.length);
+            
+            setCurrentParticipantIndex(finalParticipantIndex);
+            setCurrentPrizeIndex(finalPrizeIndex);
+            setSelectedParticipant(memoizedParticipants[finalParticipantIndex]);
+            setWonPrize(memoizedPrizes[finalPrizeIndex]);
+            
+            // Show celebration effects
+            setShowCelebration(true);
+            
+            // Play winning sound
+            playWinningSound();
+            
+            // Transition to results after short delay
+            setTimeout(() => {
+              setGameState('leaderboard');
+              submitWinnersData();
+            }, 1000);
+            
+            // Hide celebration effects
+            setTimeout(() => {
+              setShowCelebration(false);
+            }, 2000);
+          }, 300);
+        }
+        return newSpeed;
+      });
+    }, 150); // Faster interval for quicker slowdown
+
+    // Cleanup after maximum time
+    setTimeout(() => {
+      clearInterval(slowDownInterval);
+      clearInterval(participantInterval);
+      clearInterval(prizeInterval);
+    }, 3000); // Reduced total time
+  }, [memoizedParticipants, memoizedPrizes, playTickerSound, playWinningSound]);
+
+  // Optimized winners submission
+  const submitWinnersData = useCallback(async () => {
+    if (!luckyDrawData || winners.length === 0 || winnersSubmitted) {
+      return;
+    }
+
+    try {
+      setSubmissionError(null);
+      
+      const winnersData = winners.map(winner => ({
+        uid: winner.id,
+        reward: winner.prize?.name || 'Unknown Prize',
+        position: winner.position?.toString() || '0'
+      }));
+
+      await submitWinners(luckyDrawData.eventId, winnersData);
+      setWinnersSubmitted(true);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit winners data';
+      setSubmissionError(errorMessage);
+    }
+  }, [luckyDrawData, winners, winnersSubmitted]);
+
+  // Optimized reset function
+  const resetGame = useCallback(() => {
+    setGameState('start');
+    setCurrentParticipantIndex(0);
+    setCurrentPrizeIndex(0);
+    setTickerSpeed(80);
+    setWonPrize(null);
+    setSelectedParticipant(null);
+    setWinnersSubmitted(false);
+    setSubmissionError(null);
+    setShowCelebration(false);
+    
+    // Reset audio to background music
+    stopAllAudio();
+    setTimeout(() => {
+      playBackgroundMusic();
+    }, 500);
+  }, [stopAllAudio, playBackgroundMusic]);
+
+  // Memoized helper functions
+  const getRankIcon = useCallback((rank: number) => {
+    switch (rank) {
+      case 1: return <Crown className="w-6 h-6 text-yellow-400" />;
+      case 2: return <Trophy className="w-6 h-6 text-cyan-400" />;
+      case 3: return <Star className="w-6 h-6 text-pink-400" />;
+      default: return <Zap className="w-5 h-5 text-purple-400" />;
+    }
+  }, []);
+
+  const getRankGlow = useCallback((rank: number) => {
+    switch (rank) {
+      case 1: return 'rank-1';
+      case 2: return 'rank-2';
+      case 3: return 'rank-3';
+      default: return 'rank-default';
+    }
+  }, []);
+
   // Show loading state while API data is being fetched
   if (apiLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center relative overflow-hidden">
-        {/* Animated background grid */}
         <div className="absolute inset-0 bg-grid opacity-20"></div>
-        
-        {/* Floating particles */}
-        <div className="particles">
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className={`particle particle-${i}`}></div>
-          ))}
-        </div>
-        
         <div className="text-center space-y-4">
           <div className="loading-spinner mx-auto"></div>
           <h2 className="text-2xl font-bold text-cyan-400 neon-glow-text">
@@ -75,9 +211,7 @@ function App() {
   if (apiError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 flex items-center justify-center relative overflow-hidden">
-        {/* Animated background grid */}
         <div className="absolute inset-0 bg-grid opacity-20"></div>
-        
         <div className="text-center space-y-4 max-w-md mx-auto p-6">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
           <h2 className="text-2xl font-bold text-red-400">Error Loading Data</h2>
@@ -94,264 +228,21 @@ function App() {
     );
   }
 
-  const startGame = () => {
-    if (participants.length === 0) {
-      alert('No participants available! Please check your connection and try again.');
-      return;
-    }
-    
-    if (prizes.length === 0) {
-      alert('No prizes available! The game will continue with default prizes.');
-    }
-
-    setGameState('ticker');
-    
-    // Always play spinning music (user can mute if needed)
-    stopAllAudio();
-    setTimeout(() => {
-      playTickerSound();
-    }, 200);
-    
-    setTickerSpeed(80);
-    
-    // Fast ticker animation that gradually slows down
-    const participantInterval = setInterval(() => {
-      setCurrentParticipantIndex((prev) => (prev + 1) % participants.length);
-    }, tickerSpeed);
-
-    const prizeInterval = setInterval(() => {
-      setCurrentPrizeIndex((prev) => (prev + 1) % prizes.length);
-    }, tickerSpeed);
-
-    // Gradually slow down the ticker
-    const slowDownInterval = setInterval(() => {
-      setTickerSpeed(prev => {
-        const newSpeed = prev + 20;
-        if (newSpeed >= 300) {
-          clearInterval(slowDownInterval);
-          clearInterval(participantInterval);
-          clearInterval(prizeInterval);
-          
-          // Final slow reveal of the winner
-          setTimeout(() => {
-            const finalParticipantIndex = Math.floor(Math.random() * participants.length);
-            const finalPrizeIndex = Math.floor(Math.random() * prizes.length);
-            
-            setCurrentParticipantIndex(finalParticipantIndex);
-            setCurrentPrizeIndex(finalPrizeIndex);
-            setSelectedParticipant(participants[finalParticipantIndex]);
-            setWonPrize(prizes[finalPrizeIndex]);
-            
-            // Show celebration effects and go directly to results
-            setShowCelebration(true);
-            
-            // Always play winning sound (user can mute if needed)
-            playWinningSound();
-            
-            setGameState('leaderboard');
-            
-            // Submit winners data to API
-            submitWinnersData();
-            
-            // Hide celebration effects after 1.5 seconds
-            setTimeout(() => {
-              setShowCelebration(false);
-            }, 1500);
-          }, 500);
-        }
-        return newSpeed;
-      });
-    }, 200);
-
-    // Cleanup after 4 seconds if not already cleared
-    setTimeout(() => {
-      clearInterval(slowDownInterval);
-      clearInterval(participantInterval);
-      clearInterval(prizeInterval);
-    }, 4000);
-  };
-
-  const submitWinnersData = async () => {
-    if (!luckyDrawData || winners.length === 0 || winnersSubmitted) {
-      return;
-    }
-
-    try {
-      setSubmissionError(null);
-      
-      // Format winners data for API
-      const winnersData = winners.map(winner => ({
-        uid: winner.id,
-        reward: winner.prize?.name || 'Unknown Prize',
-        position: winner.position?.toString() || '0'
-      }));
-
-      await submitWinners(luckyDrawData.eventId, winnersData);
-      setWinnersSubmitted(true);
-      console.log('Winners data submitted successfully to backend');
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit winners data';
-      setSubmissionError(errorMessage);
-      console.error('Failed to submit winners data:', errorMessage);
-    }
-  };
-
-  const resetGame = () => {
-    setGameState('start');
-    setCurrentParticipantIndex(0);
-    setCurrentPrizeIndex(0);
-    setTickerSpeed(80);
-    setWonPrize(null);
-    setSelectedParticipant(null);
-    setWinnersSubmitted(false);
-    setSubmissionError(null);
-    setShowCelebration(false);
-    setShowCelebration(false);
-    
-    // Reset audio to background music
-    stopAllAudio();
-  };
-
-  const getRankIcon = (rank: number) => {
-    switch (rank) {
-      case 1: return <Crown className="w-6 h-6 text-yellow-400" />;
-      case 2: return <Trophy className="w-6 h-6 text-cyan-400" />;
-      case 3: return <Star className="w-6 h-6 text-pink-400" />;
-      default: return <Zap className="w-5 h-5 text-purple-400" />;
-    }
-  };
-
-  const getRankGlow = (rank: number) => {
-    switch (rank) {
-      case 1: return 'rank-1';
-      case 2: return 'rank-2';
-      case 3: return 'rank-3';
-      default: return 'rank-default';
-    }
-  };
-
-  const getPrizeRarityGlow = (rarity: string) => {
-    switch (rarity) {
-      case 'legendary': return 'prize-legendary';
-      case 'epic': return 'prize-epic';
-      case 'rare': return 'prize-rare';
-      default: return 'prize-common';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 relative overflow-hidden">
-      {/* Animated background grid */}
+      {/* Optimized background elements - reduced for performance */}
       <div className="absolute inset-0 bg-grid opacity-20"></div>
       
-      {/* Floating particles */}
+      {/* Reduced particles for better performance */}
       <div className="particles">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <div key={i} className={`particle particle-${i}`}></div>
         ))}
-      </div>
-
-      {/* Lucky draw themed background elements */}
-      <div className="lucky-draw-bg">
-        {[...Array(15)].map((_, i) => {
-          const icons = ['🎰', '🎲', '🎯', '🎪', '🎊', '🎉', '💎', '👑', '🏆', '⭐', '💰', '🎁', '🍀', '🔥', '⚡'];
-          const icon = icons[i % icons.length];
-          const sizes = ['small', '', 'large'];
-          const size = sizes[i % sizes.length];
-          const left = Math.random() * 100;
-          const delay = Math.random() * 15;
-          const duration = 15 + Math.random() * 10;
-          
-          return (
-            <div
-              key={`icon-${i}`}
-              className={`floating-icon ${size}`}
-              style={{
-                left: `${left}%`,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`
-              }}
-            >
-              {icon}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Sparkle effects */}
-      <div className="sparkles">
-        {[...Array(25)].map((_, i) => {
-          const left = Math.random() * 100;
-          const top = Math.random() * 100;
-          const delay = Math.random() * 3;
-          
-          return (
-            <div
-              key={`sparkle-${i}`}
-              className="sparkle"
-              style={{
-                left: `${left}%`,
-                top: `${top}%`,
-                animationDelay: `${delay}s`
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* Prize symbols floating */}
-      <div className="prize-symbols">
-        {[...Array(12)].map((_, i) => {
-          const symbols = ['💰', '🏆', '👑', '💎', '⭐', '🎁', '🎯', '🍀', '🔥', '⚡', '💫', '✨'];
-          const symbol = symbols[i % symbols.length];
-          const left = Math.random() * 100;
-          const delay = Math.random() * 12;
-          const duration = 12 + Math.random() * 6;
-          
-          return (
-            <div
-              key={`prize-${i}`}
-              className="prize-symbol"
-              style={{
-                left: `${left}%`,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`
-              }}
-            >
-              {symbol}
-            </div>
-          );
-        })}
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         {gameState === 'start' && (
           <div className="hero-container">
-            {/* Floating Shapes */}
-            <div className="floating-shapes">
-              {[...Array(15)].map((_, i) => {
-                const shapes = ['shape-circle', 'shape-square', 'shape-triangle'];
-                const shape = shapes[i % shapes.length];
-                const size = 20 + Math.random() * 40;
-                const left = Math.random() * 100;
-                const delay = Math.random() * 20;
-                
-                return (
-                  <div
-                    key={`shape-${i}`}
-                    className={`shape ${shape}`}
-                    style={{
-                      width: shape === 'shape-triangle' ? 'auto' : `${size}px`,
-                      height: shape === 'shape-triangle' ? 'auto' : `${size}px`,
-                      left: `${left}%`,
-                      animationDelay: `${delay}s`,
-                      animationDuration: `${20 + Math.random() * 10}s`
-                    }}
-                  />
-                );
-              })}
-            </div>
-
             <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
               {/* Hero Title */}
               <h1 className="hero-title animate-fly-in">
@@ -373,7 +264,7 @@ function App() {
                 
                 <div className="stat-item">
                   <span className="stat-icon">🎁</span>
-                  <div className="stat-number">{prizes.length}</div>
+                  <div className="stat-number">{memoizedPrizes.length}</div>
                   <div className="stat-label">Amazing Prizes</div>
                 </div>
                 
@@ -391,27 +282,13 @@ function App() {
                 </p>
                 <button
                   onClick={startGame}
-                  disabled={participants.length === 0}
+                  disabled={memoizedParticipants.length === 0}
                   className="play-button"
                 >
                   🎲 Play Now
                 </button>
                 
-                {/* Audio Enable Button */}
-                <div className="mt-4">
-                  <button
-                    onClick={toggleMute}
-                    className={`px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
-                      isAudioEnabled 
-                        ? 'bg-cyan-600/20 border-cyan-400 text-cyan-400 hover:bg-cyan-600/30' 
-                        : 'bg-gray-600/20 border-gray-400 text-gray-400 hover:bg-gray-600/30'
-                    }`}
-                  >
-                    {isAudioEnabled ? '🔊 Music Playing' : '🔇 Music Muted'}
-                  </button>
-                </div>
-                
-                {participants.length === 0 && (
+                {memoizedParticipants.length === 0 && (
                   <div className="mt-4 text-red-400 text-sm font-medium bg-red-900/20 rounded-lg p-3 border border-red-500/30">
                     ⚠️ No participants available. Please check your connection and try again.
                   </div>
@@ -444,30 +321,59 @@ function App() {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
               <ParticipantDisplay 
-                participants={participants}
+                participants={memoizedParticipants}
                 currentIndex={currentParticipantIndex}
                 isSpinning={true}
               />
               <PrizeDisplay 
-                prizes={prizes}
+                prizes={memoizedPrizes}
                 currentIndex={currentPrizeIndex}
                 isSpinning={true}
               />
             </div>
             <p className="text-lg text-purple-300 opacity-75">
-              The wheel is spinning...
+              The wheel is spinning... 🎰
             </p>
           </div>
         )}
-
 
         {gameState === 'leaderboard' && (
           <div className="w-full max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-4 animate-fade-in">
               <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-cyan-400 to-pink-400 neon-glow-text">
-                LUCKY DRAW RESULTS
+                🎉 CONGRATULATIONS! 🎉
               </h1>
-              <p className="text-lg text-cyan-300">Tournament Champions & All Participants</p>
+              
+              {/* Winner Announcement */}
+              {selectedParticipant && wonPrize && (
+                <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400 rounded-xl p-8 mb-8 animate-slide-in">
+                  <h2 className="text-3xl font-bold text-yellow-400 mb-4">🏆 WINNER 🏆</h2>
+                  <div className="flex items-center justify-center gap-6 mb-4">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400">
+                      {selectedParticipant.picture ? (
+                        <img 
+                          src={selectedParticipant.picture} 
+                          alt={selectedParticipant.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-2xl">
+                          {selectedParticipant.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-white mb-2">{selectedParticipant.name}</div>
+                      <div className="text-yellow-300">ID: {selectedParticipant.id.slice(-8)}</div>
+                    </div>
+                  </div>
+                  <div className="text-center border-t border-yellow-400/30 pt-4">
+                    <div className="text-xl font-bold text-yellow-400 mb-2">Won: {wonPrize.name}</div>
+                    <div className="text-lg text-yellow-300">{wonPrize.value}</div>
+                  </div>
+                </div>
+              )}
+
               <div className="flex justify-center gap-8 text-sm text-purple-300 mt-4">
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
@@ -483,189 +389,51 @@ function App() {
                     <span>Results Submitted</span>
                   </div>
                 )}
-                {submissionError && (
-                  <div className="flex items-center gap-2 text-red-400">
-                    <AlertCircle className="w-5 h-5" />
-                    <span>Submission Failed</span>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Prize Winners Section */}
-            {winners.length > 0 && (
-              <div className="section-spacing">
-                <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text mb-8">
-                  🏆 PRIZE WINNERS 🏆
-                </h2>
-                
-                {/* Top 3 Winners Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-                  {winners.slice(0, 3).map((winner, index) => (
+            {/* All Participants */}
+            <div className="section-spacing">
+              <h3 className="text-xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
+              <div className="max-h-80 overflow-y-auto bg-black/20 rounded-xl p-4 border border-cyan-400/20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {memoizedParticipants.map((participant, index) => (
                     <div
-                      key={winner.id}
-                      className={`${getRankGlow(winner.position || 1)} p-6 rounded-xl backdrop-blur-sm border-2 animate-slide-in`}
-                      style={{ animationDelay: `${index * 0.2}s` }}
+                      key={participant.id}
+                      className={`p-3 rounded-lg border backdrop-blur-sm transition-colors ${
+                        participant.id === selectedParticipant?.id 
+                          ? 'bg-yellow-900/50 border-yellow-400/50 text-yellow-300' 
+                          : 'bg-purple-900/30 border-purple-400/30 hover:bg-purple-900/50'
+                      }`}
                     >
-                      {/* Position Badge */}
-                      <div className="flex items-center justify-center mb-4">
-                        <div className="flex items-center gap-2 text-2xl font-bold">
-                          {getRankIcon(winner.position || 1)}
-                          <span>#{winner.position}</span>
-                        </div>
-                      </div>
-                      
-                      {/* Winner Avatar */}
-                      <div className="flex justify-center mb-4">
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current">
-                          {winner.picture ? (
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold min-w-[40px]">#{index + 1}</span>
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-current flex-shrink-0">
+                          {participant.picture ? (
                             <img 
-                              src={winner.picture} 
-                              alt={winner.name}
+                              src={participant.picture} 
+                              alt={participant.name}
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-xl">
-                              {winner.name.charAt(0)}
+                            <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center text-white font-bold text-sm">
+                              {participant.name.charAt(0)}
                             </div>
                           )}
                         </div>
-                      </div>
-                      
-                      {/* Winner Name */}
-                      <div className="text-center mb-4">
-                        <div className="font-bold text-white text-lg mb-1">{winner.name}</div>
-                        <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
-                      </div>
-                      
-                      {/* Prize */}
-                      {winner.prize && (
-                        <div className="text-center border-t border-current/20 pt-4">
-                          <div className="flex justify-center mb-3">
-                            {winner.prize.picture ? (
-                              <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
-                                <img 
-                                  src={winner.prize.picture} 
-                                  alt={winner.prize.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className={`${winner.prize.color}`}>
-                                {winner.prize.icon}
-                              </div>
-                            )}
-                          </div>
-                          <div className="font-bold text-white text-base">{winner.prize.name}</div>
-                          <div className="text-sm text-yellow-300 mt-1">{winner.prize.value}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-white text-sm truncate">{participant.name}</div>
+                          <div className="text-xs opacity-75 truncate">ID: {participant.id.slice(-8)}</div>
                         </div>
-                      )}
+                        {participant.id === selectedParticipant?.id && (
+                          <div className="text-yellow-400 text-xl">👑</div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
-
-                {/* All Winners List */}
-                {winners.length > 3 && (
-                  <div className="mt-12">
-                    <h3 className="text-xl font-bold text-center text-purple-400 mb-6">Other Prize Winners</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-                      {winners.slice(3).map((winner, index) => (
-                        <div
-                          key={winner.id}
-                          className={`${getRankGlow(winner.position || 1)} p-4 rounded-lg backdrop-blur-sm border animate-slide-in flex items-center gap-4`}
-                          style={{ animationDelay: `${(index + 3) * 0.1}s` }}
-                        >
-                          <div className="flex items-center gap-2 min-w-[60px]">
-                            <span className="text-lg font-bold">#{winner.position}</span>
-                            {getRankIcon(winner.position || 1)}
-                          </div>
-                          
-                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-current flex-shrink-0">
-                            {winner.picture ? (
-                              <img 
-                                src={winner.picture} 
-                                alt={winner.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-sm">
-                                {winner.name.charAt(0)}
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-white text-base truncate">{winner.name}</div>
-                            <div className="text-xs opacity-75 truncate">ID: {winner.id.slice(-8)}</div>
-                          </div>
-                          
-                          {winner.prize && (
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              {winner.prize.picture ? (
-                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-current">
-                                  <img 
-                                    src={winner.prize.picture} 
-                                    alt={winner.prize.name}
-                                    className="w-full h-full object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className={`${winner.prize.color} text-sm`}>
-                                  {winner.prize.icon}
-                                </div>
-                              )}
-                              <div className="text-right">
-                                <div className="font-bold text-white text-sm">{winner.prize.name}</div>
-                                <div className="text-xs text-yellow-300">{winner.prize.value}</div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
-            )}
-
-            {/* Remaining Participants */}
-            {remainingParticipants.length > 0 && (
-              <div className="section-spacing">
-                <h3 className="text-xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
-                <div className="max-h-80 overflow-y-auto bg-black/20 rounded-xl p-4 border border-cyan-400/20">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {remainingParticipants.map((participant, index) => (
-                      <div
-                        key={participant.id}
-                        className="bg-purple-900/30 p-3 rounded-lg border border-purple-400/30 backdrop-blur-sm animate-slide-in hover:bg-purple-900/50 transition-colors"
-                        style={{ animationDelay: `${index * 0.05}s` }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-bold text-purple-300 min-w-[40px]">#{participant.position}</span>
-                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-400/50 flex-shrink-0">
-                            {participant.picture ? (
-                              <img 
-                                src={participant.picture} 
-                                alt={participant.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center text-white font-bold text-sm">
-                                {participant.name.charAt(0)}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-bold text-white text-sm truncate">{participant.name}</div>
-                            <div className="text-xs text-gray-400 truncate">ID: {participant.id.slice(-8)}</div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+            </div>
 
             <div className="text-center pt-8">
               <button
