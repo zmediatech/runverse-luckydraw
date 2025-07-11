@@ -119,19 +119,17 @@ function App() {
             setCurrentPrizeIndex(finalPrizeIndex);
             setSelectedParticipant(participants[finalParticipantIndex]);
             setWonPrize(prizes[finalPrizeIndex]);
-            setGameState('loading');
             
-            // Show celebration effects
-            setTimeout(() => {
-              setShowCelebration(true);
-            }, 500);
+            // Show celebration effects and go directly to results
+            setShowCelebration(true);
+            setGameState('leaderboard');
             
-            // Show leaderboard after loading
+            // Submit winners data to API
+            submitWinnersData();
+            
+            // Hide celebration effects after 3 seconds
             setTimeout(() => {
               setShowCelebration(false);
-              setGameState('leaderboard');
-              // Submit winners data to API
-              submitWinnersData();
             }, 3000);
           }, 500);
         }
@@ -422,72 +420,6 @@ function App() {
           </div>
         )}
 
-        {gameState === 'loading' && (
-          <div className="text-center space-y-8">
-            <div className="match-found-animation">
-              <div className="text-2xl text-green-400 font-bold mb-4 animate-pulse">
-                CONGRATULATIONS!
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-6">
-                {/* Winner Display */}
-                <div className="winner-card p-8 rounded-xl border-2 border-green-400 bg-black/40 backdrop-blur-sm">
-                  <div className="text-lg text-green-300 mb-4">WINNER</div>
-                  <div className="mb-4 flex justify-center">
-                    <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-green-400">
-                      {selectedParticipant?.picture ? (
-                        <img 
-                          src={selectedParticipant.picture} 
-                          alt={selectedParticipant.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-green-400 to-cyan-400 flex items-center justify-center text-white font-bold text-xl">
-                          {selectedParticipant?.name.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-2xl font-bold text-white neon-glow-text mb-2">
-                    {selectedParticipant?.name}
-                  </div>
-                  <div className="text-sm text-green-300">
-                    ID: {selectedParticipant?.id.slice(-8)}
-                  </div>
-                </div>
-
-                {/* Prize Display */}
-                <div className={`prize-won-card ${getPrizeRarityGlow(wonPrize?.rarity || 'common')} p-8 rounded-xl border-2 border-yellow-400 bg-black/40 backdrop-blur-sm`}>
-                  <div className="text-lg text-yellow-300 mb-4">PRIZE WON</div>
-                  <div className="mb-4 flex justify-center">
-                    {wonPrize?.picture ? (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-current">
-                        <img 
-                          src={wonPrize.picture} 
-                          alt={wonPrize.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className={`${wonPrize?.color} flex justify-center`}>
-                        {wonPrize?.icon}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-2xl font-bold text-white neon-glow-text mb-2">
-                    {wonPrize?.name}
-                  </div>
-                  <div className="text-xl text-yellow-400 font-mono">
-                    {wonPrize?.value}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <h2 className="text-2xl md:text-4xl font-bold text-purple-400 neon-glow-text animate-pulse">
-              PROCESSING RESULT...
-            </h2>
-            <div className="loading-spinner mx-auto"></div>
-          </div>
-        )}
 
         {gameState === 'leaderboard' && (
           <div className="w-full max-w-4xl mx-auto space-y-6">
