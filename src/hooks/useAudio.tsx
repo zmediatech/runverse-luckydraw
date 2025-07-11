@@ -354,7 +354,7 @@ const createDecentCongratsSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 2.5; // 2.5 seconds - plays once
+    const duration = 4; // 4 seconds for full revealing experience
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -365,24 +365,54 @@ const createDecentCongratsSound = (): string => {
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
         
-        // Create decent congratulations sound - Ta-Da style
-        const mainNote = Math.sin(2 * Math.PI * 523.25 * time) * 0.5; // C5
-        const harmony1 = Math.sin(2 * Math.PI * 659.25 * time) * 0.3; // E5
-        const harmony2 = Math.sin(2 * Math.PI * 783.99 * time) * 0.2; // G5
+        // Create revealing congratulations sound with multiple phases
+        let sample = 0;
         
-        // Add sparkle effect
-        const sparkle = Math.sin(2 * Math.PI * 1046.5 * time) * Math.sin(2 * Math.PI * 6 * time) * 0.15;
+        // Phase 1: Drum roll build-up (0-1.5s)
+        if (time < 1.5) {
+          const drumRoll = Math.sin(2 * Math.PI * 80 * time) * Math.sin(2 * Math.PI * 20 * time) * 0.3;
+          const buildUp = Math.sin(2 * Math.PI * 220 * time) * (time / 1.5) * 0.2;
+          sample += drumRoll + buildUp;
+        }
         
-        // Natural envelope that fades out
-        const envelope = Math.max(0, 1 - (time / duration) * 0.8) * (0.9 + 0.1 * Math.sin(2 * Math.PI * 2 * time));
+        // Phase 2: Big reveal moment (1.5-2s)
+        if (time >= 1.5 && time < 2) {
+          const revealTime = time - 1.5;
+          const bigReveal = Math.sin(2 * Math.PI * 523.25 * revealTime) * 0.8; // C5
+          const harmony = Math.sin(2 * Math.PI * 659.25 * revealTime) * 0.6; // E5
+          const bass = Math.sin(2 * Math.PI * 261.63 * revealTime) * 0.4; // C4
+          sample += bigReveal + harmony + bass;
+        }
         
-        channelData[i] = (mainNote + harmony1 + harmony2 + sparkle) * envelope * 0.8;
+        // Phase 3: Clapping and celebration (2-4s)
+        if (time >= 2) {
+          const celebrationTime = time - 2;
+          
+          // Clapping sound (irregular rhythm)
+          const clapTiming = Math.floor(celebrationTime * 8) % 4;
+          const clapIntensity = clapTiming === 0 || clapTiming === 2 ? 1 : 0;
+          const claps = Math.random() * clapIntensity * 0.4;
+          
+          // Victory melody
+          const victoryMelody = Math.sin(2 * Math.PI * 783.99 * celebrationTime) * 0.4; // G5
+          const victoryHarmony = Math.sin(2 * Math.PI * 987.77 * celebrationTime) * 0.3; // B5
+          
+          // Celebration sparkles
+          const sparkles = Math.sin(2 * Math.PI * 1567.98 * celebrationTime) * Math.sin(2 * Math.PI * 4 * celebrationTime) * 0.2;
+          
+          sample += claps + victoryMelody + victoryHarmony + sparkles;
+        }
+        
+        // Natural envelope that fades out gradually
+        const envelope = Math.max(0, 1 - (time / duration) * 0.6) * (0.9 + 0.1 * Math.sin(2 * Math.PI * 1 * time));
+        
+        channelData[i] = sample * envelope * 0.7;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create decent congratulations sound:', error);
+    console.warn('Could not create revealing congratulations sound:', error);
     return '';
   }
 };

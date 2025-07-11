@@ -153,7 +153,7 @@ function App() {
             
             // Show celebration effects and go directly to results
             setShowCelebration(true);
-            playWinningSound(); // Play winning sound
+            playWinningSound(); // Play revealing congratulations sound with claps
             setGameState('leaderboard');
             
             // Submit winners data to API
