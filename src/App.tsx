@@ -466,7 +466,19 @@ function App() {
                         </tr>
                       </thead>
                       <tbody>
-                            <td className="px-6 py-4">
+                        {winners.slice(3).map((winner, index) => (
+                          <tr key={winner.id} className="border-b border-cyan-400/10 hover:bg-cyan-900/20">
+                            <td className="px-6 py-4">#{index + 4}</td>
+                            <td className="px-6 py-4">{winner.name}</td>
+                            <td className="px-6 py-4">{winner.prize?.name || 'N/A'}</td>
+                            <td className="px-6 py-4">{winner.id.slice(-8)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             )}
             {/* All Participants */}
             <div className="section-spacing">
