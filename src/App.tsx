@@ -363,7 +363,7 @@ function App() {
 
             <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
               {/* Hero Title */}
-              <h1 className="hero-title">
+              <h1 className="hero-title animate-fly-in">
                 LUCKY DRAW
               </h1>
               
