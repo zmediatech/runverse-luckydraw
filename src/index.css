@@ -55,55 +55,180 @@ body {
   box-shadow: 0 0 10px #00ffff;
 }
 
-/* Confetti effects */
-.confetti {
-  position: absolute;
-  inset: 0;
+/* Awesome Win Confetti Effects */
+.win-confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  z-index: 1000;
   overflow: hidden;
 }
 
-.confetti-piece {
+.confetti-burst {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  animation: confetti-fall 8s infinite linear;
+  width: 12px;
+  height: 12px;
+  animation: confetti-burst 4s ease-out forwards;
 }
 
-.confetti-square {
-  background: #ffd700;
-  box-shadow: 0 0 6px #ffd700;
+.confetti-gold {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  box-shadow: 0 0 15px #ffd700;
 }
 
-.confetti-circle {
-  border-radius: 50%;
-  background: #ff1493;
-  box-shadow: 0 0 6px #ff1493;
+.confetti-silver {
+  background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
+  box-shadow: 0 0 15px #c0c0c0;
 }
 
-.confetti-triangle {
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 8px solid #00ffff;
-  filter: drop-shadow(0 0 6px #00ffff);
+.confetti-rainbow {
+  background: linear-gradient(45deg, #ff1493, #00ffff, #9333ea, #ffd700);
+  box-shadow: 0 0 15px #ff1493;
 }
 
 .confetti-star {
-  background: #9333ea;
+  background: #ffd700;
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  box-shadow: 0 0 6px #9333ea;
+  box-shadow: 0 0 20px #ffd700;
 }
 
-@keyframes confetti-fall {
+.confetti-heart {
+  background: #ff1493;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 15px #ff1493;
+}
+
+.confetti-diamond {
+  background: #00ffff;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  box-shadow: 0 0 15px #00ffff;
+}
+
+@keyframes confetti-burst {
   0% {
-    transform: translateY(-100vh) rotate(0deg);
+    transform: translateY(0) rotate(0deg) scale(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translateY(-20px) rotate(180deg) scale(1);
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh) rotate(720deg);
+    transform: translateY(100vh) rotate(720deg) scale(0.5);
     opacity: 0;
+  }
+}
+
+/* Fireworks Effect */
+.fireworks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: firework-explode 2s ease-out forwards;
+}
+
+.firework-gold {
+  background: #ffd700;
+  box-shadow: 0 0 20px #ffd700;
+}
+
+.firework-cyan {
+  background: #00ffff;
+  box-shadow: 0 0 20px #00ffff;
+}
+
+.firework-pink {
+  background: #ff1493;
+  box-shadow: 0 0 20px #ff1493;
+}
+
+.firework-purple {
+  background: #9333ea;
+  box-shadow: 0 0 20px #9333ea;
+}
+
+@keyframes firework-explode {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Celebration Text Animation */
+.celebration-text {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 4rem;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 
+    0 0 10px #ffd700,
+    0 0 20px #ffd700,
+    0 0 40px #ffd700;
+  animation: celebration-bounce 2s ease-out forwards;
+  z-index: 1001;
+  pointer-events: none;
+}
+
+@keyframes celebration-bounce {
+  0% {
+    transform: translateX(-50%) translateY(-100px) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-50%) translateY(0) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Winner Spotlight Effect */
+.winner-spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.8) 70%);
+  pointer-events: none;
+  z-index: 998;
+  animation: spotlight-pulse 3s ease-in-out infinite;
+}
+
+@keyframes spotlight-pulse {
+  0%, 100% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.8) 70%);
+  }
+  50% {
+    background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.9) 75%);
   }
 }
 

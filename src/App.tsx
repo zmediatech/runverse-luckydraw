@@ -3,6 +3,7 @@ import { Trophy, Zap, Star, Crown, Gift, Gem, Coins, Award, Users, AlertCircle, 
 import { useLuckyDraw } from './hooks/useLuckyDraw';
 import { ParticipantDisplay } from './components/ParticipantDisplay';
 import { PrizeDisplay } from './components/PrizeDisplay';
+import { WinCelebration } from './components/WinCelebration';
 import { submitWinners } from './services/api';
 import { GameState, Participant, Prize } from './types';
 
@@ -28,6 +29,7 @@ function App() {
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [winnersSubmitted, setWinnersSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // Show loading state while API data is being fetched
   if (apiLoading) {
@@ -119,6 +121,11 @@ function App() {
             setWonPrize(prizes[finalPrizeIndex]);
             setGameState('loading');
             
+            // Show celebration effects
+            setTimeout(() => {
+              setShowCelebration(true);
+            }, 1000);
+            
             // Show leaderboard after loading
             setTimeout(() => {
               setGameState('leaderboard');
@@ -173,6 +180,7 @@ function App() {
     setSelectedParticipant(null);
     setWinnersSubmitted(false);
     setSubmissionError(null);
+    setShowCelebration(false);
   };
 
   const getRankIcon = (rank: number) => {
@@ -212,29 +220,6 @@ function App() {
         {[...Array(20)].map((_, i) => (
           <div key={i} className={`particle particle-${i}`}></div>
         ))}
-      </div>
-
-      {/* Confetti effects */}
-      <div className="confetti">
-        {[...Array(30)].map((_, i) => {
-          const types = ['confetti-square', 'confetti-circle', 'confetti-triangle', 'confetti-star'];
-          const type = types[i % types.length];
-          const left = Math.random() * 100;
-          const delay = Math.random() * 8;
-          const duration = 8 + Math.random() * 4;
-          
-          return (
-            <div
-              key={`confetti-${i}`}
-              className={`confetti-piece ${type}`}
-              style={{
-                left: `${left}%`,
-                animationDelay: `${delay}s`,
-                animationDuration: `${duration}s`
-              }}
-            />
-          );
-        })}
       </div>
 
       {/* Lucky draw themed background elements */}
@@ -648,6 +633,14 @@ function App() {
           </div>
         )}
       </div>
+      
+      {/* Win Celebration Effects */}
+      <WinCelebration
+        show={showCelebration}
+        winnerName={selectedParticipant?.name || ''}
+        prizeName={wonPrize?.name || ''}
+        onComplete={() => setShowCelebration(false)}
+      />
     </div>
   );
 }
