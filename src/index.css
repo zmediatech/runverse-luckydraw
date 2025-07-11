@@ -17,10 +17,11 @@ body {
 /* Neon glow effects */
 .neon-glow-text {
   text-shadow: 
-    0 0 5px currentColor,
-    0 0 10px currentColor,
-    0 0 20px currentColor,
-    0 0 40px currentColor;
+    0 0 5px #00ffff,
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 40px #00ffff,
+    0 0 80px #ff1493;
 }
 
 /* Animated background grid */
