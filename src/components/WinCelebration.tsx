@@ -78,11 +78,6 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
       {/* Winner Spotlight */}
       <div className="winner-spotlight" />
       
-      {/* Celebration Text */}
-      <div className="celebration-text">
-        🎉 CONGRATULATIONS! 🎉
-      </div>
-      
       {/* Confetti Burst */}
       <div className="win-confetti">
         {confettiPieces}

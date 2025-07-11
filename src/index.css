@@ -645,39 +645,6 @@ body {
   }
 }
 
-/* Celebration Text Animation */
-.celebration-text {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 4rem;
-  font-weight: 900;
-  color: #ffd700;
-  text-shadow: 
-    0 0 10px #ffd700,
-    0 0 20px #ffd700,
-    0 0 40px #ffd700;
-  animation: celebration-bounce 2s ease-out forwards;
-  z-index: 15;
-  pointer-events: none;
-}
-
-@keyframes celebration-bounce {
-  0% {
-    transform: translateX(-50%) translateY(-100px) scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(-50%) translateY(0) scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
 /* Winner Spotlight Effect */
 .winner-spotlight {
   position: fixed;
