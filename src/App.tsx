@@ -28,6 +28,7 @@ function App() {
     currentTrack,
     isLoading: audioLoading,
     enableAudio,
+    disableAudio,
     playBackgroundMusic,
     playTickerSound,
     playWinningSound,
@@ -44,13 +45,6 @@ function App() {
   const [winnersSubmitted, setWinnersSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
-
-  // Start background music when component mounts
-  useEffect(() => {
-    if (gameState === 'start' && isAudioEnabled) {
-      playBackgroundMusic();
-    }
-  }, [gameState, isAudioEnabled]);
 
   // Show loading state while API data is being fetched
   if (apiLoading) {
@@ -110,17 +104,16 @@ function App() {
       alert('No prizes available! The game will continue with default prizes.');
     }
 
-    // Enable audio if not already enabled
-    if (!isAudioEnabled) {
-      enableAudio();
-    }
-
     setGameState('ticker');
-    // Stop background music and start spinning music
-    stopAllAudio();
-    setTimeout(() => {
-      playTickerSound(); // Start spinning music after brief pause
-    }, 200);
+    
+    // Only play spinning music if audio is enabled
+    if (isAudioEnabled) {
+      stopAllAudio();
+      setTimeout(() => {
+        playTickerSound();
+      }, 200);
+    }
+    
     setTickerSpeed(80);
     
     // Fast ticker animation that gradually slows down
@@ -153,7 +146,12 @@ function App() {
             
             // Show celebration effects and go directly to results
             setShowCelebration(true);
-            playWinningSound(); // Play revealing congratulations sound with claps
+            
+            // Only play winning sound if audio is enabled
+            if (isAudioEnabled) {
+              playWinningSound();
+            }
+            
             setGameState('leaderboard');
             
             // Submit winners data to API
@@ -216,9 +214,6 @@ function App() {
     
     // Reset audio to background music
     stopAllAudio();
-    if (isAudioEnabled) {
-      setTimeout(() => playBackgroundMusic(), 500);
-    }
   };
 
   const getRankIcon = (rank: number) => {
@@ -405,6 +400,30 @@ function App() {
                 >
                   🎲 Play Now
                 </button>
+                
+                {/* Audio Enable Button */}
+                <div className="mt-4">
+                  <button
+                    onClick={isAudioEnabled ? disableAudio : enableAudio}
+                    className={`px-6 py-3 rounded-lg border-2 transition-all duration-300 ${
+                      isAudioEnabled 
+                        ? 'bg-cyan-600/20 border-cyan-400 text-cyan-400 hover:bg-cyan-600/30' 
+                        : 'bg-gray-600/20 border-gray-400 text-gray-400 hover:bg-gray-600/30'
+                    }`}
+                  >
+                    {isAudioEnabled ? '🔊 Audio Enabled' : '🔇 Enable Audio'}
+                  </button>
+                  {isAudioEnabled && (
+                    <div className="mt-2">
+                      <button
+                        onClick={playBackgroundMusic}
+                        className="px-4 py-2 text-sm bg-purple-600/20 border border-purple-400 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors"
+                      >
+                        🎵 Play Background Music
+                      </button>
+                    </div>
+                  )}
+                </div>
                 
                 {participants.length === 0 && (
                   <div className="mt-4 text-red-400 text-sm font-medium bg-red-900/20 rounded-lg p-3 border border-red-500/30">

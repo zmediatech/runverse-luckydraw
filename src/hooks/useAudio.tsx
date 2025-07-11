@@ -61,6 +61,12 @@ export const useAudio = () => {
     }
   };
 
+  const disableAudio = () => {
+    setIsAudioEnabled(false);
+    stopAllAudio();
+    console.log('Audio disabled');
+  };
+
   const playBackgroundMusic = async () => {
     if (!isAudioEnabled || !backgroundMusicRef.current) return;
 
@@ -255,19 +261,20 @@ export const useAudio = () => {
   };
 
   const toggleMute = () => {
-    const newMutedState = !isAudioEnabled;
-    setIsAudioEnabled(!newMutedState);
-    
-    if (newMutedState) {
-      stopAllAudio();
+    if (isAudioEnabled) {
+      disableAudio();
+    } else {
+      enableAudio();
     }
   };
+    
 
   return {
     isAudioEnabled,
     currentTrack,
     isLoading,
     enableAudio,
+    disableAudio,
     playBackgroundMusic,
     playTickerSound,
     playWinningSound,
