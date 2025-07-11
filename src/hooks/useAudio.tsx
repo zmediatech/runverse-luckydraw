@@ -9,7 +9,7 @@ export const useAudio = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Initialize audio elements with real music URLs
+    // Initialize audio elements
     backgroundMusicRef.current = new Audio();
     tickerSoundRef.current = new Audio();
     winningSoundRef.current = new Audio();
@@ -77,26 +77,36 @@ export const useAudio = () => {
         winningSoundRef.current.currentTime = 0;
       }
 
-      // Use a royalty-free background music from freesound.org or similar
-      // This is an upbeat, casino-style background music
-      backgroundMusicRef.current.src = 'https://www.soundjay.com/misc/sounds/casino-ambience-1.mp3';
-      
-      // Fallback to a different source if first one fails
-      backgroundMusicRef.current.onerror = () => {
-        if (backgroundMusicRef.current) {
-          backgroundMusicRef.current.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_bright_positive_win_001_24004.mp3';
+      // Vibrant, playful background music sources
+      const musicSources = [
+        'https://www.soundjay.com/misc/sounds/carnival-music-1.mp3',
+        'https://freesound.org/data/previews/316/316847_5123451-lq.mp3',
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_fun_playful_001.mp3'
+      ];
+
+      let sourceIndex = 0;
+      const tryNextSource = () => {
+        if (sourceIndex < musicSources.length && backgroundMusicRef.current) {
+          backgroundMusicRef.current.src = musicSources[sourceIndex];
+          sourceIndex++;
+        } else if (backgroundMusicRef.current) {
+          // Fallback to generated playful music
+          backgroundMusicRef.current.src = createPlayfulBackgroundMusic();
         }
       };
 
+      backgroundMusicRef.current.onerror = tryNextSource;
+      tryNextSource();
+
       setCurrentTrack('background');
       await backgroundMusicRef.current.play();
-      console.log('Background music started');
+      console.log('Playful background music started');
     } catch (error) {
       console.warn('Background music could not be played:', error);
-      // Try with a simpler audio source
+      // Try with generated playful music
       try {
         if (backgroundMusicRef.current) {
-          backgroundMusicRef.current.src = createSimpleBackgroundMusic();
+          backgroundMusicRef.current.src = createPlayfulBackgroundMusic();
           await backgroundMusicRef.current.play();
         }
       } catch (fallbackError) {
@@ -118,25 +128,36 @@ export const useAudio = () => {
         backgroundMusicRef.current.pause();
       }
       
-      // Use a ticking/spinning sound effect
-      tickerSoundRef.current.src = 'https://www.soundjay.com/misc/sounds/slot-machine-1.mp3';
-      
-      // Fallback
-      tickerSoundRef.current.onerror = () => {
-        if (tickerSoundRef.current) {
-          tickerSoundRef.current.src = createTickerSound();
+      // Vibrant, exciting ticker sounds
+      const tickerSources = [
+        'https://www.soundjay.com/misc/sounds/game-show-buzzer-1.mp3',
+        'https://freesound.org/data/previews/270/270324_4388723-lq.mp3',
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_spinning_wheel_001.mp3'
+      ];
+
+      let sourceIndex = 0;
+      const tryNextSource = () => {
+        if (sourceIndex < tickerSources.length && tickerSoundRef.current) {
+          tickerSoundRef.current.src = tickerSources[sourceIndex];
+          sourceIndex++;
+        } else if (tickerSoundRef.current) {
+          // Fallback to generated exciting ticker
+          tickerSoundRef.current.src = createExcitingTickerSound();
         }
       };
 
+      tickerSoundRef.current.onerror = tryNextSource;
+      tryNextSource();
+
       setCurrentTrack('ticker');
       await tickerSoundRef.current.play();
-      console.log('Ticker sound started');
+      console.log('Exciting ticker sound started');
     } catch (error) {
       console.warn('Ticker sound could not be played:', error);
       // Fallback to generated sound
       try {
         if (tickerSoundRef.current) {
-          tickerSoundRef.current.src = createTickerSound();
+          tickerSoundRef.current.src = createExcitingTickerSound();
           await tickerSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -158,25 +179,36 @@ export const useAudio = () => {
         tickerSoundRef.current.pause();
       }
       
-      // Use a victory/winning sound effect
-      winningSoundRef.current.src = 'https://www.soundjay.com/misc/sounds/victory-1.mp3';
-      
-      // Fallback
-      winningSoundRef.current.onerror = () => {
-        if (winningSoundRef.current) {
-          winningSoundRef.current.src = createWinningSound();
+      // Vibrant, celebratory winning sounds
+      const winningSources = [
+        'https://www.soundjay.com/misc/sounds/ta-da-1.mp3',
+        'https://freesound.org/data/previews/316/316847_5123451-lq.mp3',
+        'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/zapsplat_multimedia_game_sound_win_celebration_001.mp3'
+      ];
+
+      let sourceIndex = 0;
+      const tryNextSource = () => {
+        if (sourceIndex < winningSources.length && winningSoundRef.current) {
+          winningSoundRef.current.src = winningSources[sourceIndex];
+          sourceIndex++;
+        } else if (winningSoundRef.current) {
+          // Fallback to generated celebration
+          winningSoundRef.current.src = createCelebrationSound();
         }
       };
 
+      winningSoundRef.current.onerror = tryNextSource;
+      tryNextSource();
+
       setCurrentTrack('winning');
       await winningSoundRef.current.play();
-      console.log('Winning sound started');
+      console.log('Celebration sound started');
     } catch (error) {
       console.warn('Winning sound could not be played:', error);
       // Fallback to generated sound
       try {
         if (winningSoundRef.current) {
-          winningSoundRef.current.src = createWinningSound();
+          winningSoundRef.current.src = createCelebrationSound();
           await winningSoundRef.current.play();
         }
       } catch (fallbackError) {
@@ -225,12 +257,12 @@ export const useAudio = () => {
   };
 };
 
-// Fallback: Create simple background music using Web Audio API
-const createSimpleBackgroundMusic = (): string => {
+// Create vibrant, playful background music
+const createPlayfulBackgroundMusic = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 8; // 8 seconds loop
+    const duration = 10; // 10 seconds loop
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -240,29 +272,35 @@ const createSimpleBackgroundMusic = (): string => {
       
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
-        // Create upbeat casino-style music
-        const bass = Math.sin(2 * Math.PI * 110 * time) * 0.3; // A2
-        const melody = Math.sin(2 * Math.PI * 440 * time) * 0.2; // A4
-        const harmony = Math.sin(2 * Math.PI * 660 * time) * 0.15; // E5
-        const rhythm = Math.sin(2 * Math.PI * 2 * time) * 0.1; // 2Hz rhythm
         
-        channelData[i] = (bass + melody + harmony) * (0.5 + rhythm) * 0.4;
+        // Create bouncy, carnival-like music
+        const melody1 = Math.sin(2 * Math.PI * 523 * time) * 0.3; // C5
+        const melody2 = Math.sin(2 * Math.PI * 659 * time) * 0.25; // E5
+        const melody3 = Math.sin(2 * Math.PI * 784 * time) * 0.2; // G5
+        const bass = Math.sin(2 * Math.PI * 131 * time) * 0.4; // C3
+        
+        // Add bouncy rhythm
+        const bounce = Math.sin(2 * Math.PI * 4 * time) * 0.15;
+        const sparkle = Math.sin(2 * Math.PI * 1047 * time) * Math.sin(2 * Math.PI * 0.5 * time) * 0.1;
+        
+        // Combine for playful sound
+        channelData[i] = (melody1 + melody2 + melody3 + bass + bounce + sparkle) * 0.5;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create background music:', error);
+    console.warn('Could not create playful background music:', error);
     return '';
   }
 };
 
-// Create ticker/spinning sound
-const createTickerSound = (): string => {
+// Create exciting, vibrant ticker sound
+const createExcitingTickerSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 1; // 1 second loop
+    const duration = 0.8; // 0.8 second loop
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -272,28 +310,30 @@ const createTickerSound = (): string => {
       
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
-        // Create mechanical ticking sound
-        const tick = Math.sin(2 * Math.PI * 1000 * time) * Math.exp(-time * 8);
-        const click = Math.sin(2 * Math.PI * 2000 * time) * Math.exp(-time * 12);
-        const noise = (Math.random() - 0.5) * 0.05;
         
-        channelData[i] = (tick + click + noise) * 0.6;
+        // Create exciting spinning wheel sound
+        const spin = Math.sin(2 * Math.PI * 800 * time) * Math.exp(-time * 3) * 0.4;
+        const click = Math.sin(2 * Math.PI * 1200 * time) * Math.exp(-time * 8) * 0.3;
+        const whoosh = Math.sin(2 * Math.PI * 200 * time * (1 + time * 2)) * 0.2;
+        const excitement = Math.sin(2 * Math.PI * 1600 * time) * Math.sin(2 * Math.PI * 10 * time) * 0.15;
+        
+        channelData[i] = (spin + click + whoosh + excitement) * 0.8;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create ticker sound:', error);
+    console.warn('Could not create exciting ticker sound:', error);
     return '';
   }
 };
 
-// Create winning celebration sound
-const createWinningSound = (): string => {
+// Create vibrant celebration sound
+const createCelebrationSound = (): string => {
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const sampleRate = audioContext.sampleRate;
-    const duration = 4; // 4 seconds
+    const duration = 3; // 3 seconds
     const numSamples = sampleRate * duration;
     
     const buffer = audioContext.createBuffer(2, numSamples, sampleRate);
@@ -303,20 +343,27 @@ const createWinningSound = (): string => {
       
       for (let i = 0; i < numSamples; i++) {
         const time = i / sampleRate;
-        // Create triumphant fanfare
-        const trumpet1 = Math.sin(2 * Math.PI * 523 * time) * 0.4; // C5
-        const trumpet2 = Math.sin(2 * Math.PI * 659 * time) * 0.3; // E5
-        const trumpet3 = Math.sin(2 * Math.PI * 784 * time) * 0.25; // G5
-        const envelope = Math.max(0, 1 - time / duration);
-        const celebration = Math.sin(2 * Math.PI * 1200 * time * (1 + time)) * 0.1;
         
-        channelData[i] = (trumpet1 + trumpet2 + trumpet3 + celebration) * envelope * 0.7;
+        // Create joyful celebration fanfare
+        const fanfare1 = Math.sin(2 * Math.PI * 523 * time) * 0.4; // C5
+        const fanfare2 = Math.sin(2 * Math.PI * 659 * time) * 0.35; // E5
+        const fanfare3 = Math.sin(2 * Math.PI * 784 * time) * 0.3; // G5
+        const fanfare4 = Math.sin(2 * Math.PI * 1047 * time) * 0.25; // C6
+        
+        // Add sparkly effects
+        const sparkles = Math.sin(2 * Math.PI * 2093 * time * (1 + Math.sin(time * 8))) * 0.2;
+        const chimes = Math.sin(2 * Math.PI * 1568 * time) * Math.sin(2 * Math.PI * 3 * time) * 0.15;
+        
+        // Envelope for natural fade
+        const envelope = Math.max(0, 1 - time / duration) * (0.8 + 0.2 * Math.sin(2 * Math.PI * 6 * time));
+        
+        channelData[i] = (fanfare1 + fanfare2 + fanfare3 + fanfare4 + sparkles + chimes) * envelope * 0.8;
       }
     }
     
     return bufferToWave(buffer);
   } catch (error) {
-    console.warn('Could not create winning sound:', error);
+    console.warn('Could not create celebration sound:', error);
     return '';
   }
 };
