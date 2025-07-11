@@ -133,6 +133,8 @@ export const submitWinners = async (eventId: string, winners: Array<{uid: string
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
       
       const response = await fetch(`${API_BASE_URL}/luckydraws/draw`, {
+      }
+      )
       const response = await fetch(`${API_BASE_URL}/luckydraws/draw/${eventId}`, {
         method: 'POST',
         signal: controller.signal,
