@@ -19,11 +19,11 @@ export const WinCelebration: React.FC<WinCelebrationProps> = ({
     if (show) {
       setShowEffects(true);
       
-      // Auto-complete after 6 seconds
+      // Auto-complete after 1.5 seconds
       const timer = setTimeout(() => {
         setShowEffects(false);
         onComplete();
-      }, 6000);
+      }, 1500);
 
       return () => clearTimeout(timer);
     }

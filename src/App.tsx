@@ -127,10 +127,10 @@ function App() {
             // Submit winners data to API
             submitWinnersData();
             
-            // Hide celebration effects after 3 seconds
+            // Hide celebration effects after 1.5 seconds
             setTimeout(() => {
               setShowCelebration(false);
-            }, 3000);
+            }, 1500);
           }, 500);
         }
         return newSpeed;
