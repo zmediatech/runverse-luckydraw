@@ -397,7 +397,7 @@ function App() {
                 {/* All Winners Table */}
                 {winners.length > 0 && (
                   <div className="section-spacing">
-                    <h3 className="text-2xl font-bold text-center text-purple-400 mb-8">All Prize Winners</h3>
+                    <h3 className="text-2xl font-bold text-center text-purple-400 mb-8 mt-12">All Prize Winners</h3>
                     <div className="leaderboard-container max-h-[500px] overflow-y-auto">
                         {winners.map((winner, index) => (
                           <div
