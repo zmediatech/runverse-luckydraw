@@ -1,7 +1,9 @@
 import { LuckyDrawResponse } from '../types';
 
-// Always use direct backend URL since Netlify doesn't support Vite proxy
-const API_BASE_URL = 'https://runverse-backend.vercel.app/api';
+// Use direct backend URL in production, proxy in development
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://runverse-backend.vercel.app/api' 
+  : '/api';
 
 // Mock data for fallback when API is unavailable
 const createMockLuckyDrawData = (eventId: string): LuckyDrawResponse => {
