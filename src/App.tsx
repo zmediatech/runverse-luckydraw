@@ -596,7 +596,7 @@ function App() {
                 {winners.length > 3 && (
                   <div className="mt-12">
                     <h3 className="text-xl font-bold text-center text-white mb-6">Other Prize Winners</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                    <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto">
                       {winners.slice(3).map((winner, index) => (
                         <div
                           key={winner.id}
