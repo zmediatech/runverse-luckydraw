@@ -489,14 +489,14 @@ function App() {
                     <div
                       key={winner.id}
                       className={`
-                        ${isFirst ? 'podium-first-place' : 
-                          isSecond ? 'podium-second-place' : 
-                          'podium-third-place'} 
-                        p-8 rounded-3xl animate-slide-in
+                        ${isFirst ? 'bg-yellow-500' : 
+                          isSecond ? 'bg-cyan-500' : 
+                          'bg-pink-500'} 
+                        p-8 rounded-3xl animate-slide-in border-0
                         ${isFirst ? 'min-h-[500px] md:w-80 leaderboard-champion' : 
                           isSecond ? 'min-h-[420px] md:w-72 leaderboard-runner-up' : 
                           'min-h-[380px] md:w-72 leaderboard-third-place'}
-                        w-full flex flex-col justify-between relative border-4
+                        w-full flex flex-col justify-between relative
                         ${isFirst ? 'order-2 md:order-2' : 
                           isSecond ? 'order-1 md:order-1' : 
                           'order-3 md:order-3'}
@@ -506,9 +506,9 @@ function App() {
                       {/* Position Badge */}
                       <div className="flex items-center justify-center mb-6 relative z-10">
                         <div className={`flex items-center gap-3 ${isFirst ? 'text-3xl' : 'text-2xl'} font-bold ${
-                          isFirst ? 'text-yellow-400' : 
-                          isSecond ? 'text-cyan-400' : 
-                          'text-pink-400'
+                          isFirst ? 'text-yellow-900' : 
+                          isSecond ? 'text-cyan-900' : 
+                          'text-pink-900'
                         }`}>
                           {getRankIcon(winner.position || 1)}
                           <span>#{winner.position}</span>
@@ -518,9 +518,9 @@ function App() {
                       {/* Winner Avatar */}
                       <div className="flex justify-center mb-6 relative z-10">
                         <div className={`${isFirst ? 'w-28 h-28' : 'w-24 h-24'} rounded-full overflow-hidden border-4 ${
-                          isFirst ? 'border-yellow-400' : 
-                          isSecond ? 'border-cyan-400' : 
-                          'border-pink-400'
+                          isFirst ? 'border-yellow-700' : 
+                          isSecond ? 'border-cyan-700' : 
+                          'border-pink-700'
                         } shadow-lg`}>
                           {winner.picture ? (
                             <img 
@@ -542,19 +542,19 @@ function App() {
                       
                       {/* Winner Name */}
                       <div className="text-center mb-6 relative z-10">
-                        <div className={`font-bold text-white ${isFirst ? 'text-xl' : 'text-lg'} mb-2`}>{winner.name}</div>
+                        <div className={`font-bold ${isFirst ? 'text-yellow-900' : isSecond ? 'text-cyan-900' : 'text-pink-900'} ${isFirst ? 'text-xl' : 'text-lg'} mb-2`}>{winner.name}</div>
                         <div className={`text-sm ${
-                          isFirst ? 'text-yellow-300' : 
-                          isSecond ? 'text-cyan-300' : 
-                          'text-pink-300'
-                        } bg-black/30 rounded-full px-3 py-1 inline-block`}>ID: {winner.id.slice(-8)}</div>
+                          isFirst ? 'text-yellow-800' : 
+                          isSecond ? 'text-cyan-800' : 
+                          'text-pink-800'
+                        } bg-white/20 rounded-full px-3 py-1 inline-block`}>ID: {winner.id.slice(-8)}</div>
                       </div>
                       
                       {/* Divider Line */}
                       <div className={`w-full h-px ${
-                        isFirst ? 'bg-yellow-400' : 
-                        isSecond ? 'bg-cyan-400' : 
-                        'bg-pink-400'
+                        isFirst ? 'bg-yellow-700' : 
+                        isSecond ? 'bg-cyan-700' : 
+                        'bg-pink-700'
                       } mb-6 relative z-10`}></div>
                       
                       {/* Prize */}
@@ -563,9 +563,9 @@ function App() {
                           <div className="flex justify-center mb-4 prize-container">
                             {winner.prize.picture ? (
                               <div className={`${isFirst ? 'w-20 h-20' : 'w-16 h-16'} rounded-xl overflow-hidden border-2 ${
-                                isFirst ? 'border-yellow-400' : 
-                                isSecond ? 'border-cyan-400' : 
-                                'border-pink-400'
+                                isFirst ? 'border-yellow-700' : 
+                                isSecond ? 'border-cyan-700' : 
+                                'border-pink-700'
                               } shadow-xl bg-white/10`}>
                                 <img 
                                   src={winner.prize.picture} 
@@ -579,11 +579,11 @@ function App() {
                               </div>
                             )}
                           </div>
-                          <div className={`font-bold text-white ${isFirst ? 'text-lg' : 'text-base'} mb-3`}>{winner.prize.name}</div>
+                          <div className={`font-bold ${isFirst ? 'text-yellow-900' : isSecond ? 'text-cyan-900' : 'text-pink-900'} ${isFirst ? 'text-lg' : 'text-base'} mb-3`}>{winner.prize.name}</div>
                           <div className={`${isFirst ? 'text-base' : 'text-sm'} font-semibold rounded-full px-4 py-2 inline-block ${
-                            isFirst ? 'text-yellow-900 bg-yellow-400' : 
-                            isSecond ? 'text-cyan-900 bg-cyan-400' : 
-                            'text-pink-900 bg-pink-400'
+                            isFirst ? 'text-yellow-100 bg-yellow-700' : 
+                            isSecond ? 'text-cyan-100 bg-cyan-700' : 
+                            'text-pink-100 bg-pink-700'
                           }`}>{winner.prize.value}</div>
                         </div>
                       )}
