@@ -483,7 +483,7 @@ function App() {
                   {winners.slice(0, 3).map((winner, index) => (
                     <div
                       key={winner.id}
-                      className={`${getRankGlow(winner.position || 1)} p-6 rounded-xl backdrop-blur-sm border-2 animate-slide-in`}
+                      className={`${getRankGlow(winner.position || 1)} golden-dotted-border p-6 rounded-xl backdrop-blur-sm animate-slide-in`}
                       style={{ animationDelay: `${index * 0.2}s` }}
                     >
                       {/* Position Badge */}
