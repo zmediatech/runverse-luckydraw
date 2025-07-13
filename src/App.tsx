@@ -470,6 +470,7 @@ function App() {
             {winners.length > 0 && (
               <div className="section-spacing">
                 <h2 className="text-3xl font-bold text-center text-yellow-400 neon-glow-text mb-8">
+                <h2 className="text-3xl font-bold text-center text-yellow-400 mb-8">
                   🏆 PRIZE WINNERS 🏆
                 </h2>
                 
