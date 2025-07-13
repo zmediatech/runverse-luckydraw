@@ -40,16 +40,16 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
       
       {/* Audio control button */}
       <button
-        onClick={isAudioEnabled ? onToggleMute : onEnableAudio}
+        onClick={onToggleMute}
         disabled={isLoading}
         className={`p-3 rounded-full border-2 transition-all duration-300 backdrop-blur-sm ${
           isLoading
             ? 'bg-yellow-600/20 border-yellow-400 text-yellow-400 cursor-not-allowed'
             : isAudioEnabled 
-            ? 'bg-cyan-600/20 border-cyan-400 text-cyan-400 hover:bg-cyan-600/30' 
+            ? 'bg-green-600/20 border-green-400 text-green-400 hover:bg-green-600/30' 
             : 'bg-red-600/20 border-red-400 text-red-400 hover:bg-red-600/30'
         }`}
-        title={isLoading ? 'Loading Audio...' : isAudioEnabled ? 'Mute Audio' : 'Enable Audio'}
+        title={isLoading ? 'Loading Audio...' : isAudioEnabled ? 'Mute Audio' : 'Unmute Audio'}
       >
         {isLoading ? (
           <div className="w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />

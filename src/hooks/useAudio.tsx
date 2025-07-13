@@ -4,7 +4,7 @@ export const useAudio = () => {
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const tickerSoundRef = useRef<HTMLAudioElement | null>(null);
   const winningSoundRef = useRef<HTMLAudioElement | null>(null);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 

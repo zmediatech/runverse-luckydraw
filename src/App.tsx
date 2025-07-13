@@ -47,7 +47,7 @@ function App() {
 
   // Start background music when component mounts
   useEffect(() => {
-    if (gameState === 'start' && isAudioEnabled) {
+    if (gameState === 'start') {
       playBackgroundMusic();
     }
   }, [gameState, isAudioEnabled]);
