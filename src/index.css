@@ -1277,130 +1277,56 @@ body {
 /* Golden dotted border effect for top winners */
 .golden-dotted-border {
   position: relative;
-  border: 4px solid transparent;
-  background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.1)) padding-box,
-              linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b) border-box;
-  border-radius: 20px;
+  border: 6px solid transparent;
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.15)) padding-box;
+  border-radius: 24px;
+  overflow: hidden;
 }
 
 .golden-dotted-border::before {
   content: '';
   position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-  background: linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b);
-  border-radius: 24px;
-  z-index: -2;
-  padding: 4px;
-  background-clip: padding-box;
-  border: 4px solid transparent;
-  background-image: 
-    radial-gradient(circle at 0% 0%, white 2px, transparent 2px),
-    radial-gradient(circle at 25% 0%, white 2px, transparent 2px),
-    radial-gradient(circle at 50% 0%, white 2px, transparent 2px),
-    radial-gradient(circle at 75% 0%, white 2px, transparent 2px),
-    radial-gradient(circle at 100% 0%, white 2px, transparent 2px),
-    radial-gradient(circle at 0% 25%, white 2px, transparent 2px),
-    radial-gradient(circle at 100% 25%, white 2px, transparent 2px),
-    radial-gradient(circle at 0% 50%, white 2px, transparent 2px),
-    radial-gradient(circle at 100% 50%, white 2px, transparent 2px),
-    radial-gradient(circle at 0% 75%, white 2px, transparent 2px),
-    radial-gradient(circle at 100% 75%, white 2px, transparent 2px),
-    radial-gradient(circle at 0% 100%, white 2px, transparent 2px),
-    radial-gradient(circle at 25% 100%, white 2px, transparent 2px),
-    radial-gradient(circle at 50% 100%, white 2px, transparent 2px),
-    radial-gradient(circle at 75% 100%, white 2px, transparent 2px),
-    radial-gradient(circle at 100% 100%, white 2px, transparent 2px),
-    linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b);
-  background-size: 
-    20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px,
-    20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px,
-    20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px,
-    20px 20px, 100% 100%;
-  animation: golden-border-glow 3s ease-in-out infinite alternate;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  background: linear-gradient(45deg, #ff6b6b, #ffd700, #4ecdc4, #45b7d1);
+  background-size: 400% 400%;
+  border-radius: 30px;
+  z-index: -1;
+  animation: golden-border-glow 4s ease-in-out infinite;
 }
 
 .golden-dotted-border::after {
   content: '';
   position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 20px;
-  z-index: -1;
-}
-
-/* Golden border effect */
-.golden-border {
-  position: relative;
-  display: inline-block;
-}
-
-.golden-border::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120%;
-  height: 120%;
-  background: linear-gradient(45deg, #ffd700, #ffed4e, #fbbf24, #f59e0b, #ffd700);
-  border-radius: 20px;
-  z-index: -1;
-  animation: golden-border-glow 3s ease-in-out infinite alternate;
-  opacity: 0.8;
-}
-
-@keyframes golden-border-glow {
-  0% {
-    box-shadow: 
-      0 0 20px rgba(255, 215, 0, 0.8),
-      0 0 40px rgba(255, 215, 0, 0.6),
-      0 0 60px rgba(255, 215, 0, 0.4);
-  }
-  100% {
-    box-shadow: 
-      0 0 40px rgba(255, 215, 0, 1),
-      0 0 80px rgba(255, 215, 0, 0.8),
-      0 0 120px rgba(255, 215, 0, 0.6);
-  }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .top-player-card {
-    margin-bottom: 1rem;
-  }
-  
-  .leaderboard-row {
-    padding: 0.75rem;
-  }
-  
-  .particles {
-    display: none;
-  }
-}
-
-/* Scrollbar styling */
-.leaderboard-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.leaderboard-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-}
-
-.leaderboard-container::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #00ffff, #ff1493);
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-.leaderboard-container::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #ff1493, #00ffff);
-}
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  background: 
+    /* Top dots */
+    radial-gradient(circle at 8% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 20% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 32% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 44% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 56% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 68% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 80% 8%, white 3px, transparent 3px),
+    radial-gradient(circle at 92% 8%, white 3px, transparent 3px),
+    /* Bottom dots */
+    radial-gradient(circle at 8% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 20% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 32% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 44% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 56% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 68% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 80% 92%, white 3px, transparent 3px),
+    radial-gradient(circle at 92% 92%, white 3px, transparent 3px),
+    /* Left dots */
+    radial-gradient(circle at 8% 20%, white 3px, transparent 3px),
+    radial-gradient(circle at 8% 32%, white 3px, transparent 3px),
+    radial-gradient(circle at 8% 44%, white 3px, transparent 3px),
+    radial-gradient(circle at 8% 56%, white 3px, transparent 3px),
+    radial-gradient(circle at 8% 68%, white 3px, transparent 3px),
+    radial-gradient(circle at 8% 80%, white 3px, transparent 3px),

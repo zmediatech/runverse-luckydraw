@@ -479,24 +479,32 @@ function App() {
                 </h2>
                 
                 {/* Top 3 Winners Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+                <div className="flex flex-col md:flex-row justify-center items-end gap-6 max-w-5xl mx-auto mb-12">
                   {winners.slice(0, 3).map((winner, index) => (
                     <div
                       key={winner.id}
-                      className={`${getRankGlow(winner.position || 1)} golden-dotted-border p-6 rounded-xl backdrop-blur-sm animate-slide-in`}
+                      className={`
+                        ${winner.position === 1 ? 'golden-dotted-border leaderboard-first' : 
+                          winner.position === 2 ? 'silver-dotted-border leaderboard-second' : 
+                          'bronze-dotted-border leaderboard-third'} 
+                        ${getRankGlow(winner.position || 1)} 
+                        p-8 rounded-xl backdrop-blur-sm animate-slide-in
+                        ${winner.position === 1 ? 'min-h-[400px]' : 'min-h-[350px]'}
+                        w-full md:w-80 flex flex-col justify-between
+                      `}
                       style={{ animationDelay: `${index * 0.2}s` }}
                     >
                       {/* Position Badge */}
-                      <div className="flex items-center justify-center mb-4">
-                        <div className="flex items-center gap-2 text-2xl font-bold">
+                      <div className="flex items-center justify-center mb-6">
+                        <div className={`flex items-center gap-3 ${winner.position === 1 ? 'text-3xl' : 'text-2xl'} font-bold`}>
                           {getRankIcon(winner.position || 1)}
                           <span>#{winner.position}</span>
                         </div>
                       </div>
                       
                       {/* Winner Avatar */}
-                      <div className="flex justify-center mb-4">
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-current">
+                      <div className="flex justify-center mb-6">
+                        <div className={`${winner.position === 1 ? 'w-28 h-28' : 'w-24 h-24'} rounded-full overflow-hidden border-4 border-current shadow-lg`}>
                           {winner.picture ? (
                             <img 
                               src={winner.picture} 
@@ -504,7 +512,7 @@ function App() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold text-xl">
+                            <div className={`w-full h-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-white font-bold ${winner.position === 1 ? 'text-2xl' : 'text-xl'}`}>
                               {winner.name.charAt(0)}
                             </div>
                           )}
@@ -512,17 +520,17 @@ function App() {
                       </div>
                       
                       {/* Winner Name */}
-                      <div className="text-center mb-4">
-                        <div className="font-bold text-white text-lg mb-1">{winner.name}</div>
-                        <div className="text-sm opacity-75">ID: {winner.id.slice(-8)}</div>
+                      <div className="text-center mb-6">
+                        <div className={`font-bold text-white ${winner.position === 1 ? 'text-xl' : 'text-lg'} mb-2 neon-glow-text`}>{winner.name}</div>
+                        <div className="text-sm opacity-75 bg-black/20 rounded-full px-3 py-1 inline-block">ID: {winner.id.slice(-8)}</div>
                       </div>
                       
                       {/* Prize */}
                       {winner.prize && (
-                        <div className="text-center border-t border-current/20 pt-4">
-                          <div className="flex justify-center mb-3">
+                        <div className="text-center border-t border-current/20 pt-6 mt-auto">
+                          <div className="flex justify-center mb-4">
                             {winner.prize.picture ? (
-                              <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-current">
+                              <div className={`${winner.position === 1 ? 'w-24 h-24' : 'w-20 h-20'} rounded-lg overflow-hidden border-3 border-current shadow-xl`}>
                                 <img 
                                   src={winner.prize.picture} 
                                   alt={winner.prize.name}
@@ -530,13 +538,13 @@ function App() {
                                 />
                               </div>
                             ) : (
-                              <div className={`${winner.prize.color}`}>
+                              <div className={`${winner.prize.color} ${winner.position === 1 ? 'scale-150' : 'scale-125'} drop-shadow-lg`}>
                                 {winner.prize.icon}
                               </div>
                             )}
                           </div>
-                          <div className="font-bold text-white text-base">{winner.prize.name}</div>
-                          <div className="text-sm text-yellow-300 mt-1">{winner.prize.value}</div>
+                          <div className={`font-bold text-white ${winner.position === 1 ? 'text-lg' : 'text-base'} neon-glow-text mb-2`}>{winner.prize.name}</div>
+                          <div className={`${winner.position === 1 ? 'text-base' : 'text-sm'} text-yellow-300 font-semibold bg-yellow-900/20 rounded-full px-3 py-1 inline-block`}>{winner.prize.value}</div>
                         </div>
                       )}
                     </div>
