@@ -1309,7 +1309,22 @@ body {
 .golden-dotted-border {
   position: relative;
   border: 6px solid transparent;
-  background: linear-gradient(45deg, rgba(255, 215, 0, 0.15), rgba(255, 193, 7, 0.15)) padding-box;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(29, 78, 216, 0.9)),
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 215, 0, 0.05) 10px, rgba(255, 215, 0, 0.05) 20px);
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(192, 192, 192, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(229, 229, 229, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(51, 65, 85, 0.9)),
+    repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(192, 192, 192, 0.05) 8px, rgba(192, 192, 192, 0.05) 16px);
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(205, 127, 50, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(184, 134, 11, 0.15) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(92, 51, 23, 0.95), rgba(120, 53, 15, 0.9)),
+    repeating-linear-gradient(30deg, transparent, transparent 12px, rgba(205, 127, 50, 0.08) 12px, rgba(205, 127, 50, 0.08) 24px);
+  background-blend-mode: overlay, overlay, normal, multiply;
   border-radius: 24px;
   overflow: hidden;
 }
