@@ -421,15 +421,10 @@ function App() {
             <h2 className="text-3xl md:text-5xl font-bold text-cyan-400 neon-glow-text animate-pulse">
               SPINNING...
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="flex justify-center max-w-2xl mx-auto">
               <ParticipantDisplay 
                 participants={participants}
                 currentIndex={currentParticipantIndex}
-                isSpinning={true}
-              />
-              <PrizeDisplay 
-                prizes={prizes}
-                currentIndex={currentPrizeIndex}
                 isSpinning={true}
               />
             </div>
