@@ -607,12 +607,12 @@ function App() {
                 {/* All Winners List */}
                 {winners.length > 3 && (
                   <div className="mt-12">
-                    <h3 className="text-xl font-bold text-center text-purple-400 mb-6">Other Prize Winners</h3>
+                    <h3 className="text-xl font-bold text-center text-white mb-6">Other Prize Winners</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
                       {winners.slice(3).map((winner, index) => (
                         <div
                           key={winner.id}
-                          className={`${getRankGlow(winner.position || 1)} p-4 rounded-lg backdrop-blur-sm border animate-slide-in flex items-center gap-4`}
+                          className="bg-gradient-to-r from-slate-800 to-slate-700 p-4 rounded-lg border-2 border-slate-600 animate-slide-in flex items-center gap-4 shadow-lg"
                           style={{ animationDelay: `${(index + 3) * 0.1}s` }}
                         >
                           <div className="flex items-center gap-2 min-w-[60px]">
