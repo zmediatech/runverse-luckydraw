@@ -412,22 +412,6 @@ function App() {
                   </div>
                 )}
               </div>
-
-              {/* Features */}
-              <div className="features-grid">
-                <div className="feature-item">
-                  <span className="feature-icon">⚡</span>
-                  <div className="feature-text">Real-time spinning</div>
-                </div>
-                <div className="feature-item">
-                  <span className="feature-icon">🎯</span>
-                  <div className="feature-text">Fair & transparent</div>
-                </div>
-                <div className="feature-item">
-                  <span className="feature-icon">💎</span>
-                  <div className="feature-text">Multiple prize tiers</div>
-                </div>
-              </div>
             </div>
           </div>
         )}
