@@ -503,13 +503,6 @@ function App() {
                       `}
                       style={{ animationDelay: `${index * 0.2}s` }}
                     >
-                      {/* Dotted border decoration */}
-                      <div className={`absolute inset-0 rounded-3xl ${
-                        isFirst ? 'podium-dots-gold' : 
-                        isSecond ? 'podium-dots-cyan' : 
-                        'podium-dots-pink'
-                      }`}></div>
-                      
                       {/* Position Badge */}
                       <div className="flex items-center justify-center mb-6 relative z-10">
                         <div className={`flex items-center gap-3 ${isFirst ? 'text-3xl' : 'text-2xl'} font-bold ${
