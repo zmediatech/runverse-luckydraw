@@ -616,7 +616,7 @@ function App() {
                           style={{ animationDelay: `${(index + 3) * 0.1}s` }}
                         >
                           <div className="flex items-center gap-2 min-w-[60px]">
-                            <span className="text-lg font-bold">#{winner.position}</span>
+                            <span className="text-lg font-bold text-yellow-400">#{winner.position}</span>
                             {getRankIcon(winner.position || 1)}
                           </div>
                           
