@@ -443,7 +443,7 @@ function App() {
         {gameState === 'leaderboard' && (
           <div className="w-full max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-4 animate-fade-in">
-              <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-cyan-400 to-pink-400 neon-glow-text">
+              <h1 className="text-4xl md:text-6xl font-bold text-white">
                 LUCKY DRAW RESULTS
               </h1>
               <p className="text-lg text-cyan-300">Tournament Champions & All Participants</p>
