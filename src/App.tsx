@@ -636,7 +636,7 @@ function App() {
                           
                           <div className="flex-1 min-w-0">
                             <div className="font-bold text-white text-base truncate">{winner.name}</div>
-                            <div className="text-xs opacity-75 truncate">ID: {winner.id.slice(-8)}</div>
+                            <div className="text-xs text-white opacity-75 truncate">ID: {winner.id.slice(-8)}</div>
                           </div>
                           
                           {winner.prize && (
@@ -656,7 +656,7 @@ function App() {
                               )}
                               <div className="text-right">
                                 <div className="font-bold text-white text-sm">{winner.prize.name}</div>
-                                <div className="text-xs text-yellow-300">{winner.prize.value}</div>
+                                <div className="text-xs text-white">{winner.prize.value}</div>
                               </div>
                             </div>
                           )}
