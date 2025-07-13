@@ -607,8 +607,8 @@ function App() {
               </div>
             )}
 
-            {/* Remaining Participants */}
-            {remainingParticipants.length > 0 && (
+            {/* Remaining Participants - COMMENTED OUT FOR NOW */}
+            {/* {remainingParticipants.length > 0 && (
               <div className="section-spacing">
                 <h3 className="text-xl font-bold text-center text-cyan-400 mb-6">All Participants</h3>
                 <div className="max-h-80 overflow-y-auto bg-black/20 rounded-xl p-4 border border-cyan-400/20">
@@ -644,7 +644,7 @@ function App() {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="text-center pt-8">
               <button
